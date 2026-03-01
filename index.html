@@ -2,1182 +2,778 @@
 
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Riad Zahir — Maison d'hôtes, Médina de Marrakech</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root {
-      --primary: hsl(18,50%,38%);
-      --primary-light: hsl(18,50%,48%);
-      --background: hsl(35,30%,97%);
-      --foreground: hsl(25,30%,10%);
-      --muted: hsl(25,12%,42%);
-      --card: hsl(35,25%,94%);
-      --border: hsl(32,18%,80%);
-      --accent: hsl(170,30%,28%);
-      --dark: hsl(25,30%,6%);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Jost', sans-serif;
-      background: var(--background);
-      color: var(--foreground);
-      overflow-x: hidden;
-    }
-    .font-display { font-family: 'Cormorant Garamond', serif; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#060610">
+<title>PIXEL RUN</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;}
+html,body{width:100%;height:100%;overflow:hidden;background:#060610;font-family:'Rajdhani',sans-serif;}
+.scr{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.scr.on{display:flex;}
+.gl{background:linear-gradient(140deg,rgba(255,255,255,.09),rgba(255,255,255,.02),rgba(255,255,255,.05));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.11);box-shadow:0 20px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.12);}
 
-```
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: hsl(18,50%,38%,0.3); border-radius: 10px; }
+/* START */
+#s-icon{font-size:5rem;text-align:center;display:block;animation:fl 2.8s ease-in-out infinite;filter:drop-shadow(0 12px 32px rgba(232,25,44,.6));}
+@keyframes fl{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-16px) rotate(4deg) scale(1.07);}}
+#s-title{font-family:‘Bebas Neue’,sans-serif;font-size:3.4rem;letter-spacing:.22em;background:linear-gradient(160deg,#ff6070,#e8192c,#ffd740);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;line-height:1;display:block;}
+#s-sub{font-size:.5rem;letter-spacing:.3em;color:#7070a0;text-align:center;margin-top:3px;margin-bottom:26px;}
+#s-card{border-radius:28px;padding:24px 20px;width:100%;max-width:360px;}
+.best-box{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.18);border-radius:18px;margin-bottom:16px;}
+#s-best-v{font-family:‘Bebas Neue’,sans-serif;font-size:1.7rem;color:#f5c518;}
+.diff-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+.db{padding:13px 4px;border-radius:16px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);font-family:‘Bebas Neue’,sans-serif;font-size:.85rem;letter-spacing:.06em;color:#7070a0;cursor:pointer;text-align:center;position:relative;overflow:hidden;transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+.db.on{background:rgba(232,25,44,.12);border-color:rgba(232,25,44,.5);color:#e8192c;}
+.ctrl{margin-bottom:18px;}
+.ctrl-t{font-size:.44rem;letter-spacing:.22em;color:#7070a0;text-transform:uppercase;margin-bottom:10px;}
+.ctrl-r{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ctrl-ic{width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.ctrl-tx{font-size:.68rem;color:#7070a0;font-weight:600;}
+.ctrl-tx b{color:#f0f0f8;}
+.play-btn{width:100%;padding:20px;border:none;border-radius:22px;font-family:‘Bebas Neue’,sans-serif;font-size:1.4rem;letter-spacing:.15em;color:#fff;cursor:pointer;background:linear-gradient(135deg,#ff6070,#e8192c,#c0001a);box-shadow:0 14px 44px rgba(232,25,44,.42);position:relative;overflow:hidden;}
 
-/* Moroccan pattern */
-.moroccan-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23b0784a' stroke-width='0.5' opacity='0.07'/%3E%3Cpath d='M30 10L50 30L30 50L10 30Z' fill='none' stroke='%23b0784a' stroke-width='0.5' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-}
-.zellige-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z' fill='none' stroke='%23ffffff' stroke-width='0.6' opacity='0.07'/%3E%3Ccircle cx='40' cy='40' r='8' fill='none' stroke='%23ffffff' stroke-width='0.6' opacity='0.05'/%3E%3C/svg%3E");
-  pointer-events: none;
-}
+/* GAME */
+#game-scr{padding:0;justify-content:flex-start;}
+#hud{width:100%;display:flex;align-items:center;justify-content:space-between;padding:46px 16px 6px;flex-shrink:0;position:relative;z-index:5;}
+#hud-left{display:flex;flex-direction:column;}
+#hud-score{font-family:‘Bebas Neue’,sans-serif;font-size:2.4rem;color:#f0f0f8;line-height:1;}
+#hud-lbl{font-size:.4rem;letter-spacing:.2em;color:#7070a0;text-transform:uppercase;}
+#hud-mid{display:flex;flex-direction:column;align-items:center;gap:5px;position:absolute;left:50%;transform:translateX(-50%);}
+#hud-best{font-family:‘Bebas Neue’,sans-serif;font-size:.85rem;color:#f5c518;opacity:.55;}
+#hud-lives{display:flex;gap:4px;}
+.heart{font-size:1rem;transition:all .3s;}
+.heart.off{opacity:.15;transform:scale(.65);}
+#hud-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+#hud-coins{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.2);}
+#hud-coin-v{font-family:‘Bebas Neue’,sans-serif;font-size:.9rem;color:#f5c518;}
+#hud-combo{font-family:‘Bebas Neue’,sans-serif;font-size:.8rem;color:#00d4ff;opacity:0;transition:opacity .3s;letter-spacing:.06em;}
+#cv-wrap{position:relative;flex:1;width:100%;min-height:0;}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;}
+#pause-ic{position:absolute;bottom:16px;right:14px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;z-index:10;}
 
-/* Animations */
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-@keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-@keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-@keyframes charReveal {
-  from{opacity:0;transform:translateY(120%) rotateX(-80deg)}
-  to{opacity:1;transform:translateY(0) rotateX(0)}
-}
-@keyframes lineExpand { from{width:0;opacity:0} to{width:120px;opacity:1} }
-@keyframes scaleIn { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
-@keyframes slideFromLeft { from{opacity:0;transform:translateX(-50px)} to{opacity:1;transform:translateX(0)} }
-@keyframes slideFromRight { from{opacity:0;transform:translateX(50px)} to{opacity:1;transform:translateX(0)} }
+/* PAUSE */
+#pause-scr{position:fixed;inset:0;z-index:50;background:rgba(6,6,16,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+#pause-scr.on{display:flex;}
+#pause-scr h2{font-family:‘Bebas Neue’,sans-serif;font-size:3rem;letter-spacing:.14em;color:#f0f0f8;margin-bottom:5px;}
+#pause-scr p{font-size:.54rem;letter-spacing:.2em;color:#7070a0;margin-bottom:30px;}
+.p-card{border-radius:28px;padding:24px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px;}
+.p-btn{width:100%;padding:17px;border:none;border-radius:20px;font-family:‘Bebas Neue’,sans-serif;font-size:1.05rem;letter-spacing:.12em;cursor:pointer;position:relative;overflow:hidden;}
+.p-resume{background:linear-gradient(135deg,#ff6070,#e8192c,#c0001a);color:#fff;box-shadow:0 10px 30px rgba(232,25,44,.35);}
+.p-quit{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#7070a0;}
 
-.animate-float { animation: float 2.5s ease-in-out infinite; }
-.animate-marquee { animation: marquee 25s linear infinite; }
+/* GAMEOVER */
+#go-icon{font-size:4rem;display:block;text-align:center;margin-bottom:6px;animation:pop .5s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes pop{0%{transform:scale(.1) rotate(-15deg);opacity:0;}100%{transform:none;opacity:1;}}
+#go-title{font-family:‘Bebas Neue’,sans-serif;font-size:3.2rem;letter-spacing:.14em;color:#e8192c;margin-bottom:4px;}
+#go-newbest{font-family:‘Bebas Neue’,sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f5c518;margin-bottom:16px;display:none;animation:nb 1.1s ease-in-out infinite;}
+@keyframes nb{0%,100%{opacity:1;}50%{opacity:.35;}}
+#go-card{border-radius:28px;padding:20px;width:100%;max-width:360px;margin-bottom:14px;}
+.go-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.go-st{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:13px;text-align:center;}
+.go-sv{font-family:‘Bebas Neue’,sans-serif;font-size:1.85rem;}
+.go-sl{font-size:.4rem;letter-spacing:.14em;color:#3e3e62;text-transform:uppercase;margin-top:2px;}
+.gold{color:#f5c518;}.cyan{color:#00d4ff;}.green{color:#2dc653;}.red{color:#e8192c;}
+#go-btns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:360px;}
+.go-retry{width:100%;padding:19px;border:none;border-radius:22px;font-family:‘Bebas Neue’,sans-serif;font-size:1.3rem;letter-spacing:.14em;color:#fff;cursor:pointer;background:linear-gradient(135deg,#ff6070,#e8192c,#c0001a);box-shadow:0 12px 38px rgba(232,25,44,.4);position:relative;overflow:hidden;}
+.go-home{width:100%;padding:15px;border:1px solid rgba(255,255,255,.1);border-radius:20px;background:rgba(255,255,255,.05);font-family:‘Bebas Neue’,sans-serif;font-size:.95rem;letter-spacing:.1em;color:#7070a0;cursor:pointer;}
 
-/* Reveal on scroll */
-.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-left { opacity: 0; transform: translateX(-50px); transition: opacity 1s ease, transform 1s ease; }
-.reveal-left.visible { opacity: 1; transform: translateX(0); }
-.reveal-right { opacity: 0; transform: translateX(50px); transition: opacity 1s ease, transform 1s ease; }
-.reveal-right.visible { opacity: 1; transform: translateX(0); }
+/* TOAST */
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(30px);padding:11px 22px;border-radius:18px;font-family:‘Bebas Neue’,sans-serif;font-size:.9rem;letter-spacing:.08em;color:#fff;z-index:9999;opacity:0;transition:opacity .3s,transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;pointer-events:none;}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+.ft{position:absolute;font-family:‘Bebas Neue’,sans-serif;font-size:1.3rem;pointer-events:none;z-index:20;animation:fta .75s ease-out forwards;transform:translateX(-50%);}
+@keyframes fta{0%{opacity:1;transform:translateX(-50%) translateY(0);}100%{opacity:0;transform:translateX(-50%) translateY(-52px);}}
+</style>
 
-/* Scroll progress */
-#scroll-progress {
-  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 100;
-  background: hsl(18,50%,38%,0.6);
-  transform-origin: left;
-  transform: scaleX(0);
-  transition: transform 0.05s linear;
-}
-
-/* Hero char animation */
-.hero-char {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(120%) rotateX(-80deg);
-  transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
-}
-.hero-loaded .hero-char { opacity: 1; transform: translateY(0) rotateX(0); }
-
-/* Nav */
-#navbar { transition: background 0.5s, transform 0.5s, box-shadow 0.5s; }
-#navbar.scrolled { background: hsl(35,30%,97%,0.85); backdrop-filter: blur(20px); box-shadow: 0 1px 20px rgba(0,0,0,0.05); }
-#navbar.hidden-nav { transform: translateY(-100%); }
-
-/* Lightbox */
-#lightbox { display: none; }
-#lightbox.active { display: flex; }
-
-/* Mobile menu */
-#mobile-menu { display: none; }
-#mobile-menu.active { display: flex; }
-
-/* Hover effects */
-.gallery-item:hover img { transform: scale(1.1); }
-.gallery-item img { transition: transform 0.9s ease; }
-.gallery-item:hover .gallery-overlay { background: rgba(0,0,0,0.4); }
-.gallery-overlay { background: rgba(0,0,0,0); transition: background 0.5s; }
-
-/* Form focus */
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-
-/* Room hover */
-.room-img { transition: transform 1.5s ease; }
-.room-card:hover .room-img { transform: scale(1.06); }
-
-/* Button hover line */
-.nav-link::after {
-  content:''; position:absolute; bottom:0; left:50%; height:1px;
-  width:0; background:var(--primary); transform:translateX(-50%);
-  transition: width 0.5s;
-}
-.nav-link:hover::after { width: 75%; }
-
-/* Testimonial dots */
-.dot { transition: width 0.7s, background 0.7s; }
-
-/* Counter */
-.counter-val { display:inline-block; }
-```
-
-  </style>
 </head>
 <body>
-
-<!-- Scroll Progress -->
-
-<div id="scroll-progress"></div>
-
-<!-- ═══════════════════════════════ NAVIGATION ═══════════════════════════════ -->
-
-<header id="navbar" class="fixed top-0 left-0 right-0 z-50">
-  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">
-    <a href="#accueil" onclick="scrollTo({top:0,behavior:'smooth'});return false;"
-      class="group relative font-display text-xl tracking-wider text-white transition-colors duration-500 lg:text-2xl" id="nav-logo">
-      Riad Zahir
-      <span class="absolute -bottom-1 left-0 h-px w-0 bg-[var(--primary)] transition-all duration-500 group-hover:w-full"></span>
-    </a>
-
-```
-<!-- Desktop nav -->
-<div class="hidden items-center gap-1 lg:flex">
-  <button onclick="scrollTo2('experience')" class="nav-link relative px-4 py-2 text-xs tracking-widest uppercase text-white/70 hover:text-white transition-colors duration-300">Le Riad</button>
-  <button onclick="scrollTo2('chambres')" class="nav-link relative px-4 py-2 text-xs tracking-widest uppercase text-white/70 hover:text-white transition-colors duration-300">Chambres</button>
-  <button onclick="scrollTo2('galerie')" class="nav-link relative px-4 py-2 text-xs tracking-widest uppercase text-white/70 hover:text-white transition-colors duration-300">Galerie</button>
-  <button onclick="scrollTo2('avis')" class="nav-link relative px-4 py-2 text-xs tracking-widest uppercase text-white/70 hover:text-white transition-colors duration-300">Avis</button>
-  <button onclick="scrollTo2('contact')" class="nav-link relative px-4 py-2 text-xs tracking-widest uppercase text-white/70 hover:text-white transition-colors duration-300">Contact</button>
-  <button onclick="scrollTo2('reservation')" id="nav-reserve"
-    class="ml-6 border border-white/30 px-7 py-2.5 text-xs tracking-widest uppercase text-white transition-all duration-500 hover:bg-white/10">
-    Réserver
-  </button>
-</div>
-
-<!-- Burger -->
-<button id="burger" onclick="toggleMenu()" class="relative z-[60] flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden">
-  <span id="b1" class="h-px w-6 bg-white transition-all duration-500"></span>
-  <span id="b2" class="h-px w-6 bg-white transition-all duration-500"></span>
-</button>
-```
-
-  </nav>
-</header>
-
-<!-- Mobile Menu -->
-
-<div id="mobile-menu" class="fixed inset-0 z-[55] flex-col items-center justify-center opacity-0 transition-opacity duration-700"
-  style="background:hsl(25,30%,8%,0.97)">
-  <div class="flex flex-col items-center gap-8">
-    <button onclick="scrollTo2('experience');toggleMenu()" class="font-display text-3xl tracking-wider text-white/90 hover:text-white">Le Riad</button>
-    <button onclick="scrollTo2('chambres');toggleMenu()" class="font-display text-3xl tracking-wider text-white/90 hover:text-white">Chambres</button>
-    <button onclick="scrollTo2('galerie');toggleMenu()" class="font-display text-3xl tracking-wider text-white/90 hover:text-white">Galerie</button>
-    <button onclick="scrollTo2('avis');toggleMenu()" class="font-display text-3xl tracking-wider text-white/90 hover:text-white">Avis</button>
-    <button onclick="scrollTo2('contact');toggleMenu()" class="font-display text-3xl tracking-wider text-white/90 hover:text-white">Contact</button>
-    <button onclick="scrollTo2('reservation');toggleMenu()" class="mt-4 border border-white/20 px-10 py-3.5 text-xs tracking-widest uppercase text-white hover:bg-white/10 transition-all duration-300">
-      Réserver maintenant
-    </button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
-
-<section id="accueil" class="relative h-screen w-full overflow-hidden">
-  <!-- Intro black overlay -->
-  <div id="hero-intro" class="pointer-events-none absolute inset-0 z-30 transition-opacity duration-[2500ms]" style="background:hsl(25,30%,4%)"></div>
-
-  <!-- Background image -->
-
-  <div class="absolute inset-[-40px] z-0">
-    <img src="https://images.unsplash.com/photo-1539437829697-1b4ed6a89749?w=1920&q=80"
-      alt="Patio intérieur du Riad Zahir illuminé la nuit"
-      class="h-full w-full object-cover transition-all duration-[7000ms]" id="hero-img"
-      style="transform:scale(1.15);filter:blur(4px)" />
-  </div>
-
-  <!-- Overlays -->
-
-  <div class="absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-black/25 to-black/75"></div>
-  <div class="absolute inset-0 z-10 bg-gradient-to-r from-black/20 via-transparent to-black/20"></div>
-  <!-- Film grain -->
-  <div class="absolute inset-0 z-10 opacity-[0.035]" style="background-image:url(\"data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"></div>
-
-  <!-- Content -->
-
-  <div class="relative z-20 flex h-full flex-col items-center justify-center px-6">
-    <!-- Ornament -->
-    <div id="hero-ornament" class="mb-10 transition-all duration-1000 opacity-0 scale-50">
-      <svg width="32" height="32" viewBox="0 0 32 32" class="text-white/30">
-        <path d="M16 0L20 12L32 16L20 20L16 32L12 20L0 16L12 12Z" fill="currentColor"/>
-      </svg>
-    </div>
-
-```
-<!-- Title -->
-<div class="overflow-hidden">
-  <h1 id="hero-title" class="font-display text-[3.5rem] font-light leading-none tracking-[0.12em] text-white sm:text-7xl md:text-8xl lg:text-[9rem]">
-    <!-- chars injected by JS -->
-  </h1>
-</div>
-
-<!-- Line -->
-<div id="hero-line" class="my-7 h-px bg-white/30 transition-all ease-out" style="width:0;opacity:0;transition-duration:1200ms;transition-delay:1600ms"></div>
-
-<!-- Location -->
-<div class="overflow-hidden">
-  <p id="hero-location" class="text-[10px] tracking-[0.6em] text-white/50 uppercase transition-all duration-700 sm:text-xs"
-    style="transform:translateY(100%);opacity:0;transition-delay:1800ms">
-    Medina de Marrakech
-  </p>
-</div>
-
-<!-- Tagline -->
-<p id="hero-tagline" class="mt-8 max-w-sm text-center text-sm leading-relaxed text-white/40 sm:text-base transition-all duration-[800ms]"
-  style="transform:translateY(20px);opacity:0;transition-delay:2100ms">
-  Un havre de paix où l'architecture arabo-andalouse vous invite au voyage
-</p>
-
-<!-- CTAs -->
-<div id="hero-ctas" class="mt-12 flex flex-col items-center gap-4 sm:flex-row transition-all duration-[800ms]"
-  style="transform:translateY(30px);opacity:0;transition-delay:2400ms">
-  <button onclick="scrollTo2('chambres')"
-    class="group relative overflow-hidden bg-white/10 px-10 py-4 text-[10px] tracking-[0.3em] text-white uppercase backdrop-blur-sm transition-all duration-500 hover:bg-white/20">
-    <span class="absolute inset-0 -translate-x-full bg-white/10 transition-transform duration-700 group-hover:translate-x-0"></span>
-    <span class="relative">Découvrir nos chambres</span>
-  </button>
-  <button onclick="scrollTo2('reservation')"
-    class="border border-white/15 px-10 py-4 text-[10px] tracking-[0.3em] text-white/70 uppercase transition-all duration-500 hover:border-white/40 hover:text-white">
-    Réserver
-  </button>
-</div>
-```
-
-  </div>
-
-  <!-- Scroll indicator -->
-
-  <div id="hero-scroll" class="absolute bottom-10 left-1/2 z-20 -translate-x-1/2 opacity-0 transition-all duration-700" style="transition-delay:3000ms">
-    <button onclick="scrollTo2('experience')" class="flex flex-col items-center gap-3 text-white/30 hover:text-white/60 transition-colors duration-300">
-      <span class="text-[9px] tracking-[0.4em] uppercase">Scroll</span>
-      <svg class="h-4 w-4 animate-float" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-      </svg>
-    </button>
-  </div>
-
-  <!-- Side labels -->
-
-  <div id="hero-left" class="absolute left-8 top-1/2 z-20 hidden -translate-y-1/2 -rotate-90 lg:block opacity-0 transition-opacity duration-1000">
-    <span class="text-[9px] tracking-[0.5em] text-white uppercase">Depuis 2010</span>
-  </div>
-  <div id="hero-right" class="absolute right-8 top-1/2 z-20 hidden -translate-y-1/2 rotate-90 lg:block opacity-0 transition-opacity duration-1000">
-    <span class="text-[9px] tracking-[0.5em] text-white uppercase">36 Derb Sidi Bou Ameur</span>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════ EXPERIENCE ═══════════════════════════════ -->
-
-<section id="experience">
-
-  <!-- Marquee -->
-
-  <div class="relative overflow-hidden py-6" style="background:hsl(25,30%,8%)">
-    <div class="flex whitespace-nowrap animate-marquee">
-      <!-- 6 repeats -->
-      <span class="mx-6 flex items-center gap-6 text-[10px] tracking-[0.5em] text-white/20 uppercase sm:text-xs">
-        <span>Authenticité</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Sérénité</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Tradition</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Hospitalité</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Marrakech</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Authenticité</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Sérénité</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Tradition</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Hospitalité</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Marrakech</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Authenticité</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-        <span>Sérénité</span><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-      </span>
-    </div>
-  </div>
-
-  <!-- Story Section -->
-
-  <div class="relative overflow-hidden py-24 lg:py-40" style="background:hsl(35,30%,97%)">
-    <div class="moroccan-pattern absolute inset-0"></div>
-    <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
-      <div class="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-24">
-
-```
-    <!-- Left – image -->
-    <div class="reveal-left relative">
-      <div class="relative aspect-[4/5] overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=900&q=80"
-          alt="Patio du Riad Zahir en journée avec palmiers"
-          class="h-full w-full object-cover" />
-      </div>
-      <!-- Floating detail image -->
-      <div class="absolute -bottom-8 -right-4 h-40 w-32 overflow-hidden shadow-2xl sm:-right-8 sm:h-52 sm:w-44 lg:-bottom-12 lg:h-60 lg:w-48">
-        <img src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&q=80"
-          alt="Porte traditionnelle du riad"
-          class="h-full w-full object-cover" />
-        <div class="absolute inset-0 border border-white/20"></div>
-      </div>
-    </div>
-
-    <!-- Right – text -->
-    <div class="reveal-right">
-      <span class="text-[10px] tracking-[0.5em] uppercase" style="color:hsl(18,50%,38%,0.7)">Notre histoire</span>
-      <h2 class="mt-4 font-display text-3xl leading-tight sm:text-4xl lg:text-5xl" style="color:var(--foreground)">
-        Un jardin secret au cœur de la médina
-      </h2>
-      <div class="mt-6 h-px w-16" style="background:hsl(18,50%,38%,0.3)"></div>
-      <p class="mt-6 text-base leading-relaxed" style="color:var(--muted)">
-        Nichée au cœur du quartier historique de Riad Laarouss, à quelques pas de la mythique place Jemaa el-Fna, notre maison d'hôtes vous ouvre les portes d'un univers où le temps semble suspendu.
-      </p>
-      <p class="mt-4 text-base leading-relaxed" style="color:var(--muted)">
-        Bouchra et Zahira vous accueillent avec le thé à la menthe traditionnel et des pâtisseries maison. Ici, chaque détail raconte l'histoire de l'artisanat marocain&nbsp;: les murs en tadelakt, les sols en zellige, les plafonds en bois de cèdre sculpté.
-      </p>
-      <p class="mt-4 text-base leading-relaxed" style="color:var(--muted)">
-        Le patio central, planté de palmiers et orné d'un bassin, est votre oasis de fraîcheur. La terrasse vous offre une vue imprenable sur les toits de la médina et l'Atlas enneigé.
-      </p>
-      <div class="mt-10 flex items-center gap-6">
-        <button onclick="scrollTo2('chambres')"
-          class="group relative overflow-hidden px-8 py-3.5 text-[10px] tracking-[0.25em] uppercase transition-all duration-500 hover:shadow-lg"
-          style="background:var(--primary);color:hsl(40,50%,96%)">
-          <span class="absolute inset-0 -translate-x-full bg-white/10 transition-transform duration-500 group-hover:translate-x-0"></span>
-          <span class="relative">Explorer les chambres</span>
-        </button>
-      </div>
-    </div>
-
-  </div>
-</div>
-```
-
-  </div>
-
-  <!-- Stats with parallax-like bg -->
-
-  <div class="relative overflow-hidden py-20 lg:py-28">
-    <img src="https://images.unsplash.com/photo-1574766551399-0d3e85d5c10c?w=1920&q=80"
-      alt="Ruelle de la médina de Marrakech"
-      class="absolute inset-0 h-full w-full object-cover opacity-90" />
-    <div class="absolute inset-0" style="background:hsl(25,30%,6%,0.85)"></div>
-    <div class="zellige-pattern absolute inset-0"></div>
-    <div class="relative mx-auto max-w-5xl px-6">
-      <div class="grid grid-cols-2 gap-8 lg:grid-cols-4 lg:gap-4">
-        <div class="reveal flex flex-col items-center text-center" style="transition-delay:0ms">
-          <span class="font-display text-5xl text-white lg:text-6xl counter" data-end="9" data-suffix=".0">0</span>
-          <div class="mt-3 h-px w-8 bg-white/20"></div>
-          <span class="mt-3 text-xs tracking-[0.15em] text-white/50 uppercase">sur Booking.com</span>
-        </div>
-        <div class="reveal flex flex-col items-center text-center" style="transition-delay:150ms">
-          <span class="font-display text-5xl text-white lg:text-6xl counter" data-end="167" data-suffix="+">0</span>
-          <div class="mt-3 h-px w-8 bg-white/20"></div>
-          <span class="mt-3 text-xs tracking-[0.15em] text-white/50 uppercase">avis clients</span>
-        </div>
-        <div class="reveal flex flex-col items-center text-center" style="transition-delay:300ms">
-          <span class="font-display text-5xl text-white lg:text-6xl counter" data-end="5" data-suffix="">0</span>
-          <div class="mt-3 h-px w-8 bg-white/20"></div>
-          <span class="mt-3 text-xs tracking-[0.15em] text-white/50 uppercase">minutes de Jemaa el-Fna</span>
-        </div>
-        <div class="reveal flex flex-col items-center text-center" style="transition-delay:450ms">
-          <span class="font-display text-5xl text-white lg:text-6xl counter" data-end="14" data-suffix="">0</span>
-          <div class="mt-3 h-px w-8 bg-white/20"></div>
-          <span class="mt-3 text-xs tracking-[0.15em] text-white/50 uppercase">ans d'hospitalité</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════ GALLERY ═══════════════════════════════ -->
-
-<section id="galerie" class="relative overflow-hidden py-28 lg:py-36" style="background:hsl(35,25%,94%)">
-  <div class="moroccan-pattern absolute inset-0"></div>
-  <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
-
-```
-<!-- Header -->
-<div class="reveal flex flex-col items-center text-center">
-  <span class="text-[10px] tracking-[0.6em] uppercase" style="color:hsl(18,50%,38%,0.6)">Explorer</span>
-  <div class="mt-5 flex items-center gap-4">
-    <div class="h-px w-12" style="background:hsl(18,50%,38%,0.2)"></div>
-    <svg width="10" height="10" viewBox="0 0 10 10" style="color:hsl(18,50%,38%,0.4)"><path d="M5 0L10 5L5 10L0 5Z" fill="currentColor"/></svg>
-    <div class="h-px w-12" style="background:hsl(18,50%,38%,0.2)"></div>
-  </div>
-  <h2 class="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl" style="color:var(--foreground)">Galerie</h2>
-  <p class="mx-auto mt-6 max-w-lg text-base leading-relaxed" style="color:var(--muted)">
-    Laissez-vous transporter dans les espaces enchanteurs du Riad Zahir
-  </p>
-</div>
-
-<!-- Grid -->
-<div class="mt-16 grid grid-cols-2 auto-rows-[180px] gap-2 sm:auto-rows-[220px] md:grid-cols-3 md:auto-rows-[260px] md:gap-3">
-
-  <div class="col-span-2 row-span-2 reveal gallery-item cursor-pointer relative overflow-hidden" onclick="openLightbox(0)" style="transition-delay:0ms">
-    <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=900&q=80" alt="Patio et palmiers" class="absolute inset-0 h-full w-full object-cover" />
-    <div class="gallery-overlay absolute inset-0"></div>
-    <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500"><p class="text-[10px] tracking-[0.25em] text-white uppercase">Patio et palmiers</p></div>
-    <div class="absolute top-3 left-3 h-0 w-0 border-t border-l border-transparent transition-all duration-500 hover:h-8 hover:w-8" style="border-color:rgba(255,255,255,0.4)"></div>
-  </div>
-
-  <div class="reveal gallery-item cursor-pointer relative overflow-hidden" onclick="openLightbox(1)" style="transition-delay:80ms">
-    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Terrasse et vue sur l'Atlas" class="absolute inset-0 h-full w-full object-cover" />
-    <div class="gallery-overlay absolute inset-0"></div>
-  </div>
-
-  <div class="reveal gallery-item cursor-pointer relative overflow-hidden" onclick="openLightbox(2)" style="transition-delay:160ms">
-    <img src="https://images.unsplash.com/photo-1567518060498-3d3cc5ec2f67?w=600&q=80" alt="Petit-déjeuner marocain" class="absolute inset-0 h-full w-full object-cover" />
-    <div class="gallery-overlay absolute inset-0"></div>
-  </div>
-
-  <div class="row-span-2 reveal gallery-item cursor-pointer relative overflow-hidden" onclick="openLightbox(3)" style="transition-delay:240ms">
-    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80" alt="Hammam traditionnel" class="absolute inset-0 h-full w-full object-cover" />
-    <div class="gallery-overlay absolute inset-0"></div>
-  </div>
-
-  <div class="reveal gallery-item cursor-pointer relative overflow-hidden" onclick="openLightbox(4)" style="transition-delay:320ms">
-    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80" alt="Bassin et jardin" class="absolute inset-0 h-full w-full object-cover" />
-    <div class="gallery-overlay absolute inset-0"></div>
-  </div>
-
-  <div class="reveal gallery-item cursor-pointer relative overflow-hidden" onclick="openLightbox(5)" style="transition-delay:400ms">
-    <img src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80" alt="Porte traditionnelle" class="absolute inset-0 h-full w-full object-cover" />
-    <div class="gallery-overlay absolute inset-0"></div>
-  </div>
-
-</div>
-```
-
-  </div>
-</section>
-
-<!-- Lightbox -->
-
-<div id="lightbox" class="fixed inset-0 z-[100] items-center justify-center" style="background:hsl(25,30%,4%,0.97)">
-  <button onclick="closeLightbox()" class="absolute top-6 right-6 z-10 flex h-11 w-11 items-center justify-center text-white/50 hover:text-white transition-colors">
-    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-  </button>
-  <button onclick="prevLight()" class="absolute left-4 z-10 flex h-12 w-12 items-center justify-center text-white/30 hover:text-white transition-colors md:left-8">
-    <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-  </button>
-  <div class="relative h-[75vh] w-full max-w-5xl px-16">
-    <img id="lightbox-img" src="" alt="" class="h-full w-full object-contain" />
-  </div>
-  <button onclick="nextLight()" class="absolute right-4 z-10 flex h-12 w-12 items-center justify-center text-white/30 hover:text-white transition-colors md:right-8">
-    <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-  </button>
-  <div class="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-4">
-    <p id="lightbox-caption" class="text-xs tracking-[0.3em] text-white/40 uppercase"></p>
-    <div id="lightbox-thumbs" class="flex gap-1.5"></div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════ ROOMS ═══════════════════════════════ -->
-
-<section id="chambres" class="relative overflow-hidden py-28 lg:py-36" style="background:hsl(35,30%,97%)">
-  <div class="moroccan-pattern absolute inset-0"></div>
-  <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
-
-```
-<!-- Header -->
-<div class="reveal flex flex-col items-center text-center">
-  <span class="text-[10px] tracking-[0.6em] uppercase" style="color:hsl(18,50%,38%,0.6)">Séjour</span>
-  <div class="mt-5 flex items-center gap-4">
-    <div class="h-px w-12" style="background:hsl(18,50%,38%,0.2)"></div>
-    <svg width="10" height="10" viewBox="0 0 10 10" style="color:hsl(18,50%,38%,0.4)"><path d="M5 0L10 5L5 10L0 5Z" fill="currentColor"/></svg>
-    <div class="h-px w-12" style="background:hsl(18,50%,38%,0.2)"></div>
-  </div>
-  <h2 class="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl" style="color:var(--foreground)">Nos Chambres</h2>
-  <p class="mx-auto mt-6 max-w-lg text-base leading-relaxed" style="color:var(--muted)">
-    Chaque chambre est un univers unique, où l'artisanat séculaire rencontre le confort d'aujourd'hui.
-  </p>
-</div>
-
-<!-- Room 1 -->
-<div class="mt-24 flex flex-col items-center gap-8 lg:flex-row lg:gap-0 room-card">
-  <div class="reveal-left relative w-full lg:w-[58%]">
-    <div class="relative overflow-hidden" style="aspect-ratio:4/3">
-      <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=900&q=80" alt="Suite Zahir" class="room-img h-full w-full object-cover" />
-      <div class="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 text-[10px] tracking-wider uppercase backdrop-blur-sm" style="background:hsl(18,50%,38%,0.9);color:hsl(40,50%,96%)">
-        <span class="h-1.5 w-1.5 rounded-full bg-white/90 animate-pulse"></span>Très demandée
-      </div>
-    </div>
-    <div class="absolute -bottom-4 -right-2 lg:-right-6 px-6 py-4 shadow-2xl" style="background:var(--foreground)">
-      <div class="flex items-baseline gap-1">
-        <span class="font-display text-3xl" style="color:hsl(35,30%,97%)">220</span>
-        <span class="text-xs" style="color:hsl(35,30%,97%,0.5)">EUR / nuit</span>
-      </div>
-    </div>
-  </div>
-  <div class="reveal-right w-full lg:w-[42%] lg:pl-16">
-    <span class="text-[10px] tracking-[0.4em] uppercase" style="color:hsl(18,50%,38%,0.5)">L'expérience ultime</span>
-    <h3 class="mt-3 font-display text-3xl lg:text-4xl xl:text-5xl" style="color:var(--foreground)">Suite Zahir</h3>
-    <div class="mt-5 h-px" style="background:hsl(18,50%,38%,0.2);width:60px"></div>
-    <p class="mt-6 text-base leading-[1.8]" style="color:var(--muted)">
-      Notre suite d'exception, un cocon de luxe avec lit king-size, salon privé et salle de bain en tadelakt rose. Réveillez-vous face au patio planté de palmiers.
-    </p>
-    <div class="mt-6 flex flex-wrap gap-3">
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Patio privé</span>
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Lit king-size</span>
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Tadelakt</span>
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Clim</span>
-    </div>
-    <button onclick="scrollTo2('reservation')" class="group mt-8 inline-flex items-center gap-3 text-sm tracking-[0.1em] uppercase transition-colors duration-300" style="color:var(--primary)">
-      <span>Réserver cette chambre</span>
-      <span class="inline-block h-px w-6 transition-all duration-500 group-hover:w-10" style="background:var(--primary)"></span>
-    </button>
-  </div>
-</div>
-
-<!-- Room 2 -->
-<div class="mt-32 flex flex-col items-center gap-8 lg:flex-row-reverse lg:gap-0 room-card">
-  <div class="reveal-right relative w-full lg:w-[58%]">
-    <div class="relative overflow-hidden" style="aspect-ratio:4/3">
-      <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=80" alt="Chambre Jasmin" class="room-img h-full w-full object-cover" />
-      <div class="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 text-[10px] tracking-wider uppercase backdrop-blur-sm" style="background:hsl(18,50%,38%,0.9);color:hsl(40,50%,96%)">
-        <span class="h-1.5 w-1.5 rounded-full bg-white/90 animate-pulse"></span>Dernière disponible
-      </div>
-    </div>
-    <div class="absolute -bottom-4 -left-2 lg:-left-6 px-6 py-4 shadow-2xl" style="background:var(--foreground)">
-      <div class="flex items-baseline gap-1">
-        <span class="font-display text-3xl" style="color:hsl(35,30%,97%)">150</span>
-        <span class="text-xs" style="color:hsl(35,30%,97%,0.5)">EUR / nuit</span>
-      </div>
-    </div>
-  </div>
-  <div class="reveal-left w-full lg:w-[42%] lg:pr-16">
-    <span class="text-[10px] tracking-[0.4em] uppercase" style="color:hsl(18,50%,38%,0.5)">Le charme authentique</span>
-    <h3 class="mt-3 font-display text-3xl lg:text-4xl xl:text-5xl" style="color:var(--foreground)">Chambre Jasmin</h3>
-    <div class="mt-5 h-px" style="background:hsl(18,50%,38%,0.2);width:60px"></div>
-    <p class="mt-6 text-base leading-[1.8]" style="color:var(--muted)">
-      Chambre deluxe avec mobilier en bois de cèdre sculpté, zellige turquoise et tapis berbères. Un voyage sensoriel au cœur de la tradition marocaine.
-    </p>
-    <div class="mt-6 flex flex-wrap gap-3">
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Vue médina</span>
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Zellige</span>
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Wi-Fi</span>
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Clim</span>
-    </div>
-    <button onclick="scrollTo2('reservation')" class="group mt-8 inline-flex items-center gap-3 text-sm tracking-[0.1em] uppercase transition-colors duration-300" style="color:var(--primary)">
-      <span>Réserver cette chambre</span>
-      <span class="inline-block h-px w-6 transition-all duration-500 group-hover:w-10" style="background:var(--primary)"></span>
-    </button>
-  </div>
-</div>
-
-<!-- Room 3 -->
-<div class="mt-32 flex flex-col items-center gap-8 lg:flex-row lg:gap-0 room-card">
-  <div class="reveal-left relative w-full lg:w-[58%]">
-    <div class="relative overflow-hidden" style="aspect-ratio:4/3">
-      <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&q=80" alt="Chambre Menthe" class="room-img h-full w-full object-cover" />
-    </div>
-    <div class="absolute -bottom-4 -right-2 lg:-right-6 px-6 py-4 shadow-2xl" style="background:var(--foreground)">
-      <div class="flex items-baseline gap-1">
-        <span class="font-display text-3xl" style="color:hsl(35,30%,97%)">95</span>
-        <span class="text-xs" style="color:hsl(35,30%,97%,0.5)">EUR / nuit</span>
-      </div>
-    </div>
-  </div>
-  <div class="reveal-right w-full lg:w-[42%] lg:pl-16">
-    <span class="text-[10px] tracking-[0.4em] uppercase" style="color:hsl(18,50%,38%,0.5)">L'essentiel raffiné</span>
-    <h3 class="mt-3 font-display text-3xl lg:text-4xl xl:text-5xl" style="color:var(--foreground)">Chambre Menthe</h3>
-    <div class="mt-5 h-px" style="background:hsl(18,50%,38%,0.2);width:60px"></div>
-    <p class="mt-6 text-base leading-[1.8]" style="color:var(--muted)">
-      Chambre cosy au charme discret. Décoration soignée, lit confortable et vue sur les toits de la médina. L'authenticité à prix doux.
-    </p>
-    <div class="mt-6 flex flex-wrap gap-3">
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Terrasse</span>
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Douche</span>
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Wi-Fi</span>
-      <span class="px-3 py-1.5 text-xs tracking-wide" style="background:hsl(35,20%,88%);color:hsl(25,25%,18%)">Clim</span>
-    </div>
-    <button onclick="scrollTo2('reservation')" class="group mt-8 inline-flex items-center gap-3 text-sm tracking-[0.1em] uppercase transition-colors duration-300" style="color:var(--primary)">
-      <span>Réserver cette chambre</span>
-      <span class="inline-block h-px w-6 transition-all duration-500 group-hover:w-10" style="background:var(--primary)"></span>
-    </button>
-  </div>
-</div>
-```
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════ RESERVATION ═══════════════════════════════ -->
-
-<section id="reservation" class="relative overflow-hidden py-28 lg:py-36" style="background:hsl(35,30%,97%)">
-  <div class="moroccan-pattern absolute inset-0"></div>
-  <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
-
-```
-<div class="reveal flex flex-col items-center text-center">
-  <span class="text-[10px] tracking-[0.6em] uppercase" style="color:hsl(18,50%,38%,0.6)">Réservation</span>
-  <div class="mt-5 flex items-center gap-4">
-    <div class="h-px w-12" style="background:hsl(18,50%,38%,0.2)"></div>
-    <svg width="10" height="10" viewBox="0 0 10 10" style="color:hsl(18,50%,38%,0.4)"><path d="M5 0L10 5L5 10L0 5Z" fill="currentColor"/></svg>
-    <div class="h-px w-12" style="background:hsl(18,50%,38%,0.2)"></div>
-  </div>
-  <h2 class="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl" style="color:var(--foreground)">Réservez votre séjour</h2>
-</div>
-
-<div class="reveal mt-16 flex flex-col overflow-hidden shadow-2xl shadow-black/5 lg:flex-row">
-  <!-- Image side -->
-  <div class="relative w-full overflow-hidden lg:w-5/12" style="aspect-ratio:4/3;min-height:300px">
-    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80"
-      alt="Terrasse du Riad Zahir au coucher du soleil"
-      class="h-full w-full object-cover" />
-    <div class="absolute inset-0" style="background:linear-gradient(to bottom,hsl(25,30%,8%,0.5),hsl(25,30%,8%,0.8))"></div>
-    <div class="zellige-pattern absolute inset-0"></div>
-    <div class="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-      <p class="font-display text-2xl text-white lg:text-3xl">Votre oasis vous attend</p>
-      <div class="mt-6 h-px w-12 bg-white/15"></div>
-      <div class="mt-6 flex flex-col gap-3">
-        <div class="flex items-center gap-3 text-white/50">
-          <svg class="h-3.5 w-3.5" style="color:hsl(18,50%,60%)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-          <span class="text-xs tracking-wide">Petit-déjeuner marocain inclus</span>
-        </div>
-        <div class="flex items-center gap-3 text-white/50">
-          <svg class="h-3.5 w-3.5" style="color:hsl(18,50%,60%)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <span class="text-xs tracking-wide">Confirmation sous 24h</span>
-        </div>
-        <div class="flex items-center gap-3 text-white/50">
-          <svg class="h-3.5 w-3.5" style="color:hsl(18,50%,60%)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          <span class="text-xs tracking-wide">Annulation gratuite 48h avant</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Form side -->
-  <div class="w-full p-8 lg:w-7/12 lg:p-12" style="background:hsl(35,25%,94%)">
-    <div id="form-success" class="hidden h-full min-h-[400px] flex-col items-center justify-center text-center">
-      <div class="flex h-16 w-16 items-center justify-center" style="background:hsl(170,30%,28%,0.1)">
-        <svg class="h-7 w-7" fill="none" stroke="currentColor" style="color:hsl(170,30%,28%)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-      </div>
-      <h3 class="mt-6 font-display text-2xl" style="color:var(--foreground)">Demande envoyée</h3>
-      <p class="mt-3 max-w-sm text-sm leading-relaxed" style="color:var(--muted)">
-        Merci pour votre intérêt. Bouchra et Zahira vous contacteront très rapidement pour confirmer votre séjour au Riad Zahir.
-      </p>
-      <button onclick="resetForm()" class="mt-8 text-xs tracking-[0.2em] uppercase transition-colors hover:text-foreground" style="color:var(--primary)">
-        Nouvelle réservation
-      </button>
-    </div>
-
-    <form id="reservation-form" onsubmit="submitForm(event)" class="flex flex-col gap-5">
-      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <div class="flex flex-col gap-1.5">
-          <label class="text-[10px] tracking-[0.25em] uppercase" style="color:var(--muted)">Prénom</label>
-          <input type="text" required class="border px-4 py-3 text-sm transition-all duration-300" style="border-color:var(--border);background:var(--background);color:var(--foreground)" />
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <label class="text-[10px] tracking-[0.25em] uppercase" style="color:var(--muted)">Nom</label>
-          <input type="text" required class="border px-4 py-3 text-sm transition-all duration-300" style="border-color:var(--border);background:var(--background);color:var(--foreground)" />
-        </div>
-      </div>
-      <div class="flex flex-col gap-1.5">
-        <label class="text-[10px] tracking-[0.25em] uppercase" style="color:var(--muted)">Email</label>
-        <input type="email" required class="border px-4 py-3 text-sm transition-all duration-300" style="border-color:var(--border);background:var(--background);color:var(--foreground)" />
-      </div>
-      <div class="flex flex-col gap-1.5">
-        <label class="text-[10px] tracking-[0.25em] uppercase" style="color:var(--muted)">Chambre</label>
-        <select required class="border px-4 py-3 text-sm transition-all duration-300" style="border-color:var(--border);background:var(--background);color:var(--foreground)">
-          <option value="">Choisir une chambre</option>
-          <option>Suite Zahir — 220€/nuit</option>
-          <option>Chambre Jasmin — 150€/nuit</option>
-          <option>Chambre Menthe — 95€/nuit</option>
-        </select>
-      </div>
-      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <div class="flex flex-col gap-1.5">
-          <label class="text-[10px] tracking-[0.25em] uppercase" style="color:var(--muted)">Arrivée</label>
-          <input type="date" required class="border px-4 py-3 text-sm transition-all duration-300" style="border-color:var(--border);background:var(--background);color:var(--foreground)" />
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <label class="text-[10px] tracking-[0.25em] uppercase" style="color:var(--muted)">Départ</label>
-          <input type="date" required class="border px-4 py-3 text-sm transition-all duration-300" style="border-color:var(--border);background:var(--background);color:var(--foreground)" />
-        </div>
-      </div>
-      <div class="flex flex-col gap-1.5">
-        <label class="text-[10px] tracking-[0.25em] uppercase" style="color:var(--muted)">Voyageurs</label>
-        <select required class="border px-4 py-3 text-sm transition-all duration-300" style="border-color:var(--border);background:var(--background);color:var(--foreground)">
-          <option value="">Sélectionner</option>
-          <option>1 personne</option>
-          <option>2 personnes</option>
-          <option>3 personnes</option>
-        </select>
-      </div>
-      <div class="flex flex-col gap-1.5">
-        <label class="text-[10px] tracking-[0.25em] uppercase" style="color:var(--muted)">Message (optionnel)</label>
-        <textarea rows="3" class="resize-none border px-4 py-3 text-sm transition-all duration-300" style="border-color:var(--border);background:var(--background);color:var(--foreground)" placeholder="Heure d'arrivée, demandes spéciales..."></textarea>
-      </div>
-      <button type="submit" class="group relative mt-3 overflow-hidden px-8 py-4 text-[10px] tracking-[0.3em] uppercase transition-all duration-500 hover:shadow-lg"
-        style="background:var(--primary);color:hsl(40,50%,96%)">
-        <span class="absolute inset-0 -translate-x-full bg-white/10 transition-transform duration-700 group-hover:translate-x-full"></span>
-        <span class="relative">Envoyer la demande de réservation</span>
-      </button>
-    </form>
-  </div>
-</div>
-```
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════ TESTIMONIALS ═══════════════════════════════ -->
-
-<section id="avis" class="relative overflow-hidden" style="background:hsl(25,30%,8%)">
-  <img src="https://images.unsplash.com/photo-1539437829697-1b4ed6a89749?w=1920&q=80"
-    alt="" class="absolute inset-0 h-full w-full object-cover opacity-10 blur-sm" />
-  <div class="zellige-pattern absolute inset-0"></div>
-
-  <div class="relative px-6 py-28 lg:py-36">
-    <div class="mx-auto max-w-5xl">
-      <div class="reveal flex flex-col items-center text-center">
-        <span class="text-[10px] tracking-[0.6em] uppercase text-white/30">Témoignages</span>
-        <div class="mt-5 flex items-center gap-4">
-          <div class="h-px w-12 bg-white/10"></div>
-          <svg width="10" height="10" viewBox="0 0 10 10" class="text-white/20"><path d="M5 0L10 5L5 10L0 5Z" fill="currentColor"/></svg>
-          <div class="h-px w-12 bg-white/10"></div>
-        </div>
-        <h2 class="mt-5 font-display text-4xl text-white sm:text-5xl lg:text-6xl">Ils racontent</h2>
-        <div class="mt-6 flex items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center text-sm font-bold" style="background:var(--primary);color:hsl(40,50%,96%)">9.0</div>
-          <div class="text-left">
-            <p class="text-xs text-white/70">Superbe</p>
-            <p class="text-[10px] text-white/40">167+ avis sur Booking.com</p>
-          </div>
-        </div>
-      </div>
-
-```
-  <!-- Carousel -->
-  <div class="mt-16 flex flex-col items-center">
-    <svg width="48" height="48" viewBox="0 0 64 64" class="text-primary/20" style="color:hsl(18,50%,38%,0.2)">
-      <path d="M24 8C10.7 8 0 18.7 0 32c0 13.3 10.7 24 24 24V44c-6.6 0-12-5.4-12-12h12V8zm32 0C42.7 8 32 18.7 32 32c0 13.3 10.7 24 24 24V44c-6.6 0-12-5.4-12-12h12V8z" fill="currentColor"/>
-    </svg>
-
-    <div class="relative mt-8 min-h-[200px] w-full max-w-3xl sm:min-h-[160px]">
-      <div id="t0" class="testimonial-slide absolute inset-0 flex flex-col items-center text-center transition-all duration-[800ms]">
-        <p class="font-display text-lg leading-relaxed text-white/80 italic sm:text-xl md:text-2xl">"Un véritable bijou caché dans la médina. L'accueil de Bouchra et Zahira est d'une générosité rare. Le petit-déjeuner sur la terrasse face à l'Atlas, un moment hors du temps."</p>
-        <div class="mt-8 flex items-center gap-1">★★★★★</div>
-        <p class="mt-4 text-sm tracking-wide text-white/70">Sophie L.</p>
-        <p class="text-xs text-white/30">Paris, France</p>
-      </div>
-      <div id="t1" class="testimonial-slide absolute inset-0 flex flex-col items-center text-center transition-all duration-[800ms]" style="opacity:0;transform:translateY(15px) scale(0.98);pointer-events:none">
-        <p class="font-display text-lg leading-relaxed text-white/80 italic sm:text-xl md:text-2xl">"The most authentic place we've stayed. The courtyard with its palm trees and pool, the incredible tadelakt walls, the food — everything exceeded our expectations."</p>
-        <div class="mt-8 flex items-center gap-1 text-yellow-400">★★★★★</div>
-        <p class="mt-4 text-sm tracking-wide text-white/70">James W.</p>
-        <p class="text-xs text-white/30">London, UK</p>
-      </div>
-      <div id="t2" class="testimonial-slide absolute inset-0 flex flex-col items-center text-center transition-all duration-[800ms]" style="opacity:0;transform:translateY(15px) scale(0.98);pointer-events:none">
-        <p class="font-display text-lg leading-relaxed text-white/80 italic sm:text-xl md:text-2xl">"Una experiencia única e inolvidable. El riad es precioso, cada detalle cuenta una historia. El personal es increíblemente amable. Ya estamos planeando volver."</p>
-        <div class="mt-8 flex items-center gap-1 text-yellow-400">★★★★★</div>
-        <p class="mt-4 text-sm tracking-wide text-white/70">Maria C.</p>
-        <p class="text-xs text-white/30">Barcelona, España</p>
-      </div>
-      <div id="t3" class="testimonial-slide absolute inset-0 flex flex-col items-center text-center transition-all duration-[800ms]" style="opacity:0;transform:translateY(15px) scale(0.98);pointer-events:none">
-        <p class="font-display text-lg leading-relaxed text-white/80 italic sm:text-xl md:text-2xl">"Perfekte Lage, nur wenige Minuten vom Jemaa el-Fna. Das Riad ist eine Oase der Ruhe. Die traditionelle Architektur und der herzliche Empfang machen den Aufenthalt unvergesslich."</p>
-        <div class="mt-8 flex items-center gap-1 text-yellow-400">★★★★★</div>
-        <p class="mt-4 text-sm tracking-wide text-white/70">Hans M.</p>
-        <p class="text-xs text-white/30">Berlin, Deutschland</p>
-      </div>
-    </div>
-
-    <!-- Dots -->
-    <div class="mt-14 flex items-center gap-3">
-      <button onclick="setTestimonial(0)" class="dot h-2 rounded-full" id="dot0" style="width:40px;background:var(--primary)"></button>
-      <button onclick="setTestimonial(1)" class="dot h-2 rounded-full bg-white/15" id="dot1" style="width:8px"></button>
-      <button onclick="setTestimonial(2)" class="dot h-2 rounded-full bg-white/15" id="dot2" style="width:8px"></button>
-      <button onclick="setTestimonial(3)" class="dot h-2 rounded-full bg-white/15" id="dot3" style="width:8px"></button>
-    </div>
-  </div>
-</div>
-```
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════ CONTACT ═══════════════════════════════ -->
-
-<section id="contact" class="relative overflow-hidden py-28 lg:py-36" style="background:hsl(35,25%,94%)">
-  <div class="moroccan-pattern absolute inset-0"></div>
-  <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
-
-```
-<div class="reveal flex flex-col items-center text-center">
-  <span class="text-[10px] tracking-[0.6em] uppercase" style="color:hsl(18,50%,38%,0.6)">Nous trouver</span>
-  <div class="mt-5 flex items-center gap-4">
-    <div class="h-px w-12" style="background:hsl(18,50%,38%,0.2)"></div>
-    <svg width="10" height="10" viewBox="0 0 10 10" style="color:hsl(18,50%,38%,0.4)"><path d="M5 0L10 5L5 10L0 5Z" fill="currentColor"/></svg>
-    <div class="h-px w-12" style="background:hsl(18,50%,38%,0.2)"></div>
-  </div>
-  <h2 class="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl" style="color:var(--foreground)">Contact & Accès</h2>
-  <p class="mx-auto mt-6 max-w-lg text-base leading-relaxed" style="color:var(--muted)">
-    Au cœur de la médina, à 5 minutes de Jemaa el-Fna et 15 minutes de l'aéroport Menara
-  </p>
-</div>
-
-<div class="mt-16 flex flex-col gap-6 lg:flex-row lg:gap-8">
-  <!-- Map -->
-  <div class="reveal-left w-full overflow-hidden lg:w-2/3">
-    <iframe
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3397.0!2d-7.989!3d31.631!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDM3JzUxLjYiTiA3wrA1OSczMi40Ilc!5e0!3m2!1sfr!2sma!4v1700000000000!5m2!1sfr!2sma"
-      width="100%" height="420" style="border:0;min-height:420px" allowfullscreen loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"
-      title="Localisation du Riad Zahir dans la médina de Marrakech"></iframe>
-  </div>
-
-  <!-- Info cards -->
-  <div class="reveal-right flex w-full flex-col gap-3 lg:w-1/3">
-
-    <div class="group flex items-start gap-4 p-5 transition-all duration-700 hover:shadow-md" style="background:var(--background)">
-      <div class="flex h-9 w-9 shrink-0 items-center justify-center" style="background:hsl(18,50%,38%,0.05)">
-        <svg class="h-4 w-4" style="color:var(--primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-      </div>
+<div id="toast"></div>
+
+<!-- START -->
+
+<div id="start-scr" class="scr on">
+  <span id="s-icon">👾</span>
+  <span id="s-title">PIXEL RUN</span>
+  <span id="s-sub">BY DART ZONE</span>
+  <div id="s-card" class="gl">
+    <div class="best-box">
       <div>
-        <p class="text-[10px] tracking-[0.2em] uppercase" style="color:var(--muted)">Adresse</p>
-        <p class="mt-1 text-sm leading-relaxed" style="color:var(--foreground)">36 Derb Sidi Bou Ameur, Riad Laarouss, Médina, Marrakech 40000</p>
+        <div style="font-size:.44rem;letter-spacing:.2em;color:#7070a0;text-transform:uppercase;">🏆 MEILLEUR SCORE</div>
+        <div id="s-best-v">0</div>
       </div>
+      <span style="font-size:1.6rem;">🥇</span>
     </div>
-
-    <div class="group flex items-start gap-4 p-5 transition-all duration-700 hover:shadow-md" style="background:var(--background)">
-      <div class="flex h-9 w-9 shrink-0 items-center justify-center" style="background:hsl(18,50%,38%,0.05)">
-        <svg class="h-4 w-4" style="color:var(--primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-      </div>
-      <div>
-        <p class="text-[10px] tracking-[0.2em] uppercase" style="color:var(--muted)">Téléphone</p>
-        <p class="mt-1 text-sm leading-relaxed" style="color:var(--foreground)">+212 5 24 38 XX XX</p>
-      </div>
+    <div class="diff-row">
+      <div class="db on" data-d="0">FACILE</div>
+      <div class="db" data-d="1">NORMAL</div>
+      <div class="db" data-d="2">HARD</div>
     </div>
-
-    <div class="group flex items-start gap-4 p-5 transition-all duration-700 hover:shadow-md" style="background:var(--background)">
-      <div class="flex h-9 w-9 shrink-0 items-center justify-center" style="background:hsl(18,50%,38%,0.05)">
-        <svg class="h-4 w-4" style="color:var(--primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-      </div>
-      <div>
-        <p class="text-[10px] tracking-[0.2em] uppercase" style="color:var(--muted)">Email</p>
-        <p class="mt-1 text-sm leading-relaxed" style="color:var(--foreground)">contact@riadzahir.com</p>
-      </div>
+    <div class="ctrl">
+      <div class="ctrl-t">🎮 CONTRÔLES</div>
+      <div class="ctrl-r"><div class="ctrl-ic">👆</div><div class="ctrl-tx"><b>TAP</b> — Sauter</div></div>
+      <div class="ctrl-r"><div class="ctrl-ic">✌️</div><div class="ctrl-tx"><b>DOUBLE TAP</b> — Double saut</div></div>
+      <div class="ctrl-r"><div class="ctrl-ic">🪙</div><div class="ctrl-tx">Collecte les pièces pour des <b>combo</b></div></div>
     </div>
-
-    <div class="group flex items-start gap-4 p-5 transition-all duration-700 hover:shadow-md" style="background:var(--background)">
-      <div class="flex h-9 w-9 shrink-0 items-center justify-center" style="background:hsl(18,50%,38%,0.05)">
-        <svg class="h-4 w-4" style="color:var(--primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      </div>
-      <div>
-        <p class="text-[10px] tracking-[0.2em] uppercase" style="color:var(--muted)">Réception</p>
-        <p class="mt-1 text-sm leading-relaxed" style="color:var(--foreground)">Check-in 16h — Check-out 12h</p>
-      </div>
-    </div>
-
-    <a href="https://wa.me/212524380000" target="_blank" rel="noopener noreferrer"
-      class="group flex items-center justify-center gap-3 py-3.5 text-[10px] tracking-[0.2em] uppercase transition-all duration-300 hover:shadow-lg mt-2"
-      style="background:var(--accent);color:hsl(40,50%,96%)">
-      <span>WhatsApp</span>
-      <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
-    </a>
-    <a href="mailto:contact@riadzahir.com"
-      class="group flex items-center justify-center gap-3 py-3.5 text-[10px] tracking-[0.2em] uppercase transition-all duration-300 hover:text-white"
-      style="border:1px solid hsl(18,50%,38%,0.3);color:var(--primary)">
-      <span>Envoyer un email</span>
-      <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
-    </a>
+    <button class="play-btn" id="play-btn">▶ JOUER</button>
   </div>
 </div>
-```
 
-  </div>
-</section>
+<!-- GAME -->
 
-<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
-
-<footer class="relative overflow-hidden px-6 py-20" style="background:hsl(25,30%,6%)">
-  <div class="zellige-pattern absolute inset-0"></div>
-  <div class="relative mx-auto flex max-w-5xl flex-col items-center gap-8">
-    <div class="reveal">
-      <svg width="24" height="24" viewBox="0 0 24 24" class="text-white/15">
-        <path d="M12 0L24 12L12 24L0 12Z" fill="none" stroke="currentColor" stroke-width="0.8"/>
-        <path d="M12 5L19 12L12 19L5 12Z" fill="none" stroke="currentColor" stroke-width="0.5"/>
-      </svg>
+<div id="game-scr" class="scr">
+  <div id="hud">
+    <div id="hud-left"><div id="hud-score">0</div><div id="hud-lbl">SCORE</div></div>
+    <div id="hud-mid"><div id="hud-best">BEST 0</div><div id="hud-lives"></div></div>
+    <div id="hud-right">
+      <div id="hud-coins"><span style="font-size:.85rem;">🪙</span><span id="hud-coin-v">0</span></div>
+      <div id="hud-combo">COMBO x1</div>
     </div>
-    <a href="#accueil" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;"
-      class="reveal font-display text-3xl tracking-wider text-white/90 transition-colors duration-300 hover:text-white lg:text-4xl">
-      Riad Zahir
-    </a>
-    <p class="reveal max-w-sm text-center text-sm leading-relaxed text-white/30">
-      Maison d'hôtes traditionnelle au cœur de la médina de Marrakech. Hospitalité marocaine authentique.
-    </p>
-    <nav class="reveal">
-      <ul class="flex flex-wrap items-center justify-center gap-6 text-[10px] tracking-[0.25em] text-white/25 uppercase sm:gap-8">
-        <li><a href="#experience" class="transition-colors duration-300 hover:text-white/60">Le Riad</a></li>
-        <li><a href="#chambres" class="transition-colors duration-300 hover:text-white/60">Chambres</a></li>
-        <li><a href="#galerie" class="transition-colors duration-300 hover:text-white/60">Galerie</a></li>
-        <li><a href="#avis" class="transition-colors duration-300 hover:text-white/60">Avis</a></li>
-        <li><a href="#contact" class="transition-colors duration-300 hover:text-white/60">Contact</a></li>
-      </ul>
-    </nav>
-    <div class="reveal flex items-center gap-4">
-      <div class="h-px w-12 bg-white/[0.08]"></div>
-      <svg width="6" height="6" viewBox="0 0 6 6" class="text-white/10"><path d="M3 0L6 3L3 6L0 3Z" fill="currentColor"/></svg>
-      <div class="h-px w-12 bg-white/[0.08]"></div>
-    </div>
-    <p class="reveal text-[10px] tracking-wider text-white/15">
-      &copy; <span id="year"></span> Riad Zahir &mdash; 36 Derb Sidi Bou Ameur, Marrakech
-    </p>
   </div>
-</footer>
+  <div id="cv-wrap">
+    <canvas id="cv"></canvas>
+    <div id="pause-ic">⏸</div>
+  </div>
+</div>
 
-<!-- ═══════════════════════════════ JAVASCRIPT ═══════════════════════════════ -->
+<!-- PAUSE -->
+
+<div id="pause-scr">
+  <h2>PAUSE</h2><p>LE JEU EST EN PAUSE</p>
+  <div class="p-card gl">
+    <button class="p-btn p-resume" id="resume-btn">▶ REPRENDRE</button>
+    <button class="p-btn p-quit" id="quit-btn">✕ QUITTER</button>
+  </div>
+</div>
+
+<!-- GAMEOVER -->
+
+<div id="go-scr" class="scr">
+  <span id="go-icon">💀</span>
+  <div id="go-title">GAME OVER</div>
+  <div id="go-newbest">🏆 NOUVEAU RECORD !</div>
+  <div id="go-card" class="gl">
+    <div class="go-grid">
+      <div class="go-st"><div class="go-sv gold" id="go-score">0</div><div class="go-sl">Score</div></div>
+      <div class="go-st"><div class="go-sv gold" id="go-best">0</div><div class="go-sl">Record</div></div>
+      <div class="go-st"><div class="go-sv cyan" id="go-coins">0</div><div class="go-sl">Pièces</div></div>
+      <div class="go-st"><div class="go-sv green" id="go-dist">0m</div><div class="go-sl">Distance</div></div>
+    </div>
+  </div>
+  <div id="go-btns">
+    <button class="go-retry" id="retry-btn">🔄 REJOUER</button>
+    <button class="go-home" id="home-btn">← MENU</button>
+  </div>
+</div>
 
 <script>
-  // Year
-  document.getElementById('year').textContent = new Date().getFullYear();
+'use strict';
 
-  // Scroll helpers
-  function scrollTo2(id) {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  }
+/* ─── SCREENS ─── */
+var SCRNS=['start-scr','game-scr','go-scr'];
+function show(id){SCRNS.forEach(function(s){document.getElementById(s).classList.toggle('on',s===id);});}
 
-  // === HERO ANIMATION ===
-  const title = "Riad Zahir";
-  const titleEl = document.getElementById('hero-title');
-  title.split('').forEach((char, i) => {
-    const span = document.createElement('span');
-    span.className = 'hero-char';
-    span.textContent = char === ' ' ? '\u00A0' : char;
-    span.style.transitionDelay = (i * 70 + 700) + 'ms';
-    titleEl.appendChild(span);
+/* ─── TOAST ─── */
+var _t=document.getElementById('toast'),_tt;
+function toast(msg,col){_t.textContent=msg;_t.style.background=col||'#222';_t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(function(){_t.classList.remove('on');},2200);}
+
+/* ─── LOCAL STORAGE ─── */
+function getBest(){try{return parseInt(localStorage.getItem('pr3_best'))||0;}catch(e){return 0;}}
+function setBest(v){try{localStorage.setItem('pr3_best',v);}catch(e){}}
+
+/* ─── CANVAS SETUP ─── */
+var cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+var W=0,H=0,GROUND=0,dpr=window.devicePixelRatio||1;
+var PW=0,PH=0,PX=0; // player dimensions
+
+function sizeCanvas(){
+  var wrap=document.getElementById('cv-wrap');
+  W=wrap.offsetWidth||window.innerWidth;
+  H=wrap.offsetHeight||(window.innerHeight-100);
+  cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+  cv.style.width=W+'px'; cv.style.height=H+'px';
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(dpr,dpr);
+  GROUND=Math.round(H*0.80);
+  PW=Math.round(Math.min(W*0.09,46));
+  PH=Math.round(PW*1.3);
+  PX=Math.round(W*0.18);
+}
+
+/* ─── DIFFICULTY ─── */
+// jmpVel: jump velocity (px/frame at 60fps)
+// grav: gravity (px/frame²)
+// MAX jumpable obstacle height = jmpVel²/(2*grav) - PH - 15px margin
+var DIFF=[
+  {spd:4.0, grav:0.55, jmpVel:12.5, spawnLo:85, spawnHi:155, lives:3, label:'FACILE'},
+  {spd:5.2, grav:0.62, jmpVel:13.5, spawnLo:65, spawnHi:115, lives:2, label:'NORMAL'},
+  {spd:6.5, grav:0.70, jmpVel:14.5, spawnLo:48, spawnHi:88,  lives:1, label:'HARD'}
+];
+var diffIdx=0;
+document.querySelectorAll('.db').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.db').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on'); diffIdx=parseInt(b.dataset.d);
   });
+});
 
-  setTimeout(() => {
-    document.getElementById('hero-intro').style.opacity = '0';
-    const img = document.getElementById('hero-img');
-    img.style.transform = 'scale(1)';
-    img.style.filter = 'blur(0)';
-    document.getElementById('hero-ornament').style.opacity = '1';
-    document.getElementById('hero-ornament').style.transform = 'scale(1)';
-    document.body.classList.add('hero-loaded');
-  }, 400);
+/* ─── GAME STATE ─── */
+var G,PLR,OBST,COINS,PARTS,RAF,paused;
+var lastT=0;
 
-  setTimeout(() => {
-    const line = document.getElementById('hero-line');
-    line.style.width = '120px';
-    line.style.opacity = '1';
-    const loc = document.getElementById('hero-location');
-    loc.style.transform = 'translateY(0)';
-    loc.style.opacity = '1';
-  }, 1200);
+/* ─── PHYSICS HELPERS ─── */
+function maxJumpHeight(){
+  var d=DIFF[diffIdx];
+  return (d.jmpVel*d.jmpVel)/(2*d.grav);
+}
+// Returns max safe obstacle height in pixels (player can always clear it)
+function safeObsH(){
+  return Math.max(20, Math.round(maxJumpHeight() - PH - 18));
+}
 
-  setTimeout(() => {
-    ['hero-tagline','hero-ctas'].forEach(id => {
-      const el = document.getElementById(id);
-      el.style.transform = 'translateY(0)';
-      el.style.opacity = '1';
-    });
-  }, 2200);
+/* ─── PLAYER ─── */
+function initPlayer(){
+  PLR={
+    x:PX, y:GROUND-PH, vy:0,
+    onGround:true, jumps:0,
+    inv:0,    // invincibility frames
+    squash:1, squashV:0,
+    trail:[], angle:0,
+    dead:false
+  };
+}
 
-  setTimeout(() => {
-    document.getElementById('hero-scroll').style.opacity = '1';
-    document.getElementById('hero-scroll').style.transform = 'translateX(-50%) translateY(0)';
-    ['hero-left','hero-right'].forEach(id => {
-      document.getElementById(id).style.opacity = '0.3';
-    });
-  }, 3000);
+function jump(){
+  if(!PLR||PLR.dead||PLR.jumps>=2)return;
+  var d=DIFF[diffIdx];
+  PLR.vy=-d.jmpVel;
+  PLR.jumps++;
+  PLR.onGround=false;
+  PLR.squash=1.4;
+  snd(280,.07,'sine',.13); snd(420,.05,'sine',.08);
+  burst(PX+PW/2, PLR.y+PH, '#a855f7', 7);
+  if(PLR.jumps===2){ burst(PX+PW/2, PLR.y+PH/2,'#00d4ff',10); snd(540,.05,'sine',.08);}
+}
 
-  // === NAVBAR ===
-  let lastScroll = 0;
-  const navbar = document.getElementById('navbar');
-  const navLogo = document.getElementById('nav-logo');
-  const navReserve = document.getElementById('nav-reserve');
-  const navLinks2 = document.querySelectorAll('.nav-link');
-
-  window.addEventListener('scroll', () => {
-    const current = window.scrollY;
-    const scrolled = current > 80;
-    const hidden = current > lastScroll && current > 500;
-    lastScroll = current;
-
-    navbar.classList.toggle('scrolled', scrolled);
-    navbar.classList.toggle('hidden-nav', hidden);
-
-    // Update colors when scrolled
-    navLogo.style.color = scrolled ? 'hsl(25,30%,10%)' : 'white';
-    navLinks2.forEach(l => {
-      l.style.color = scrolled ? 'hsl(25,30%,10%,0.6)' : 'rgba(255,255,255,0.7)';
-    });
-    navReserve.style.borderColor = scrolled ? 'hsl(18,50%,38%,0.3)' : 'rgba(255,255,255,0.3)';
-    navReserve.style.color = scrolled ? 'hsl(18,50%,38%)' : 'white';
-
-    // Scroll progress
-    const prog = current / (document.body.scrollHeight - window.innerHeight);
-    document.getElementById('scroll-progress').style.transform = `scaleX(${prog})`;
-  });
-
-  // === MOBILE MENU ===
-  let menuOpen = false;
-  function toggleMenu() {
-    menuOpen = !menuOpen;
-    const menu = document.getElementById('mobile-menu');
-    const b1 = document.getElementById('b1');
-    const b2 = document.getElementById('b2');
-    if (menuOpen) {
-      menu.classList.add('active');
-      requestAnimationFrame(() => { menu.style.opacity = '1'; });
-      b1.style.transform = 'translateY(3px) rotate(45deg)';
-      b2.style.transform = 'translateY(-3px) rotate(-45deg)';
-    } else {
-      menu.style.opacity = '0';
-      setTimeout(() => menu.classList.remove('active'), 700);
-      b1.style.transform = '';
-      b2.style.transform = '';
+function updatePlayer(){
+  if(!PLR||PLR.dead)return;
+  var d=DIFF[diffIdx];
+  PLR.vy+=d.grav;
+  PLR.y+=PLR.vy;
+  if(PLR.y>=GROUND-PH){
+    if(!PLR.onGround&&PLR.vy>2.5){
+      PLR.squash=0.58; snd(110,.06,'triangle',.1);
+      burst(PX+PW/2, GROUND,'#663399',5);
     }
+    PLR.y=GROUND-PH; PLR.vy=0; PLR.onGround=true; PLR.jumps=0;
   }
+  // Smooth squash restore
+  PLR.squash+=(1-PLR.squash)*0.30;
+  if(Math.abs(PLR.squash-1)<0.004)PLR.squash=1;
+  if(PLR.inv>0)PLR.inv--;
+  // Trail
+  PLR.trail.unshift({x:PX+PW/2, y:PLR.y+PH/2, a:1});
+  if(PLR.trail.length>12)PLR.trail.pop();
+  PLR.trail.forEach(function(t){t.a=Math.max(0,t.a-0.1);});
+}
 
-  // === SCROLL REVEAL ===
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        // Counter animation
-        if (entry.target.classList.contains('counter')) {
-          animateCounter(entry.target);
+function drawPlayer(){
+  if(!PLR)return;
+  // Invincibility blink
+  if(PLR.inv>0&&Math.floor(PLR.inv/4)%2===1)return;
+  var sq=PLR.squash;
+  var sw=PW/sq, sh=PH*sq;
+  var ox=(PW-sw)/2, oy=PH-sh;
+  var px=PLR.x+ox, py=PLR.y+oy;
+  // Trail
+  PLR.trail.forEach(function(t,i){
+    if(t.a<=0)return;
+    ctx.save(); ctx.globalAlpha=t.a*0.13;
+    ctx.fillStyle='#a855f7';
+    ctx.beginPath(); ctx.arc(t.x,t.y,PW*0.48*t.a,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  });
+  ctx.save(); ctx.translate(px,py);
+  // Outer glow
+  ctx.shadowColor='#a855f7'; ctx.shadowBlur=22;
+  // Body gradient
+  var bg=ctx.createLinearGradient(0,0,0,sh);
+  bg.addColorStop(0,'#d08aff'); bg.addColorStop(0.5,'#8833dd'); bg.addColorStop(1,'#5511aa');
+  ctx.fillStyle=bg; rrect(ctx,0,0,sw,sh,sw*0.24); ctx.fill();
+  ctx.shadowBlur=0;
+  // Inner highlight
+  ctx.fillStyle='rgba(255,255,255,0.12)'; rrect(ctx,sw*0.08,sh*0.06,sw*0.84,sh*0.35,sw*0.18); ctx.fill();
+  // Visor
+  ctx.fillStyle='rgba(0,212,255,0.22)'; rrect(ctx,sw*0.1,sh*0.1,sw*0.8,sh*0.26,sw*0.12); ctx.fill();
+  ctx.fillStyle='rgba(0,212,255,0.1)'; rrect(ctx,sw*0.1,sh*0.1,sw*0.8,sh*0.26,sw*0.12); ctx.fill();
+  // Eyes glow
+  ctx.shadowColor='#00d4ff'; ctx.shadowBlur=14; ctx.fillStyle='#00d4ff';
+  ctx.beginPath(); ctx.arc(sw*0.29,sh*0.2,sw*0.11,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(sw*0.71,sh*0.2,sw*0.11,0,Math.PI*2); ctx.fill();
+  // Pupils
+  ctx.shadowBlur=0; ctx.fillStyle='rgba(0,0,0,0.5)';
+  ctx.beginPath(); ctx.arc(sw*0.31,sh*0.21,sw*0.05,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(sw*0.73,sh*0.21,sw*0.05,0,Math.PI*2); ctx.fill();
+  // Legs
+  var legA=PLR.onGround?Math.sin(Date.now()*0.016)*0.28:0;
+  ctx.shadowBlur=0; ctx.fillStyle='#4a10aa';
+  rrect(ctx,sw*0.1,sh*0.74,sw*0.36,sh*0.26+legA*sh*0.08,4); ctx.fill();
+  rrect(ctx,sw*0.54,sh*0.74,sw*0.36,sh*0.26-legA*sh*0.08,4); ctx.fill();
+  // Shoe highlights
+  ctx.fillStyle='rgba(255,255,255,0.12)';
+  rrect(ctx,sw*0.1,sh*0.74,sw*0.36,sh*0.07,3); ctx.fill();
+  rrect(ctx,sw*0.54,sh*0.74,sw*0.36,sh*0.07,3); ctx.fill();
+  ctx.restore();
+}
+
+function rrect(c,x,y,w,h,r){
+  r=Math.min(r,w/2,h/2);
+  c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.arcTo(x+w,y,x+w,y+r,r);
+  c.lineTo(x+w,y+h-r);c.arcTo(x+w,y+h,x+w-r,y+h,r);
+  c.lineTo(x+r,y+h);c.arcTo(x,y+h,x,y+h-r,r);
+  c.lineTo(x,y+r);c.arcTo(x,y,x+r,y,r);c.closePath();
+}
+
+/* ─── BACKGROUND (parallax 4 layers) ─── */
+var BG={stars:[],mnts:[],city:[],mx:0,cx:0,sx:0};
+
+function buildBG(){
+  BG.stars=[];
+  for(var i=0;i<80;i++)
+    BG.stars.push({x:Math.random()*W,y:Math.random()*(GROUND*0.7),r:0.4+Math.random()*1.5,o:0.08+Math.random()*0.5,sp:0.15+Math.random()*0.4});
+  BG.mnts=[];var xm=0;
+  while(xm<W*3){var mw=60+Math.random()*140,mh=25+Math.random()*85;BG.mnts.push({x:xm,w:mw,h:mh});xm+=mw*0.7+Math.random()*25;}
+  BG.city=[];var xc=0;
+  while(xc<W*3){var bw=12+Math.random()*42,bh=20+Math.random()*120;BG.city.push({x:xc,w:bw,h:bh});xc+=bw+3+Math.random()*12;}
+  BG.mx=0;BG.cx=0;BG.sx=0;
+}
+
+function drawBG(spd){
+  // Sky gradient
+  var sky=ctx.createLinearGradient(0,0,0,GROUND);
+  sky.addColorStop(0,'#030310');sky.addColorStop(0.5,'#070420');sky.addColorStop(1,'#0e0618');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,W,GROUND);
+  // Stars (slowest layer)
+  BG.sx-=spd*0.025;
+  BG.stars.forEach(function(s){
+    var x=(s.x+BG.sx*s.sp+W*10)%W;
+    ctx.fillStyle='rgba(255,255,255,'+s.o.toFixed(2)+')';
+    ctx.beginPath();ctx.arc(x,s.y,s.r,0,Math.PI*2);ctx.fill();
+  });
+  // Nebula glow
+  ctx.save();
+  var neb=ctx.createRadialGradient(W*0.7,GROUND*0.3,0,W*0.7,GROUND*0.3,W*0.5);
+  neb.addColorStop(0,'rgba(120,20,160,0.07)');neb.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=neb;ctx.fillRect(0,0,W,GROUND);ctx.restore();
+  // Mountains (slow)
+  BG.mx-=spd*0.22; if(BG.mx<-W)BG.mx+=W;
+  for(var p=0;p<2;p++){
+    ctx.fillStyle='rgba(30,6,50,0.55)';
+    ctx.beginPath();ctx.moveTo(BG.mx+p*W,GROUND);
+    BG.mnts.forEach(function(m){var mx=m.x+BG.mx+p*W;ctx.lineTo(mx+m.w*0.5,GROUND-m.h);ctx.lineTo(mx+m.w,GROUND);});
+    ctx.closePath();ctx.fill();
+  }
+  // City silhouette (medium)
+  BG.cx-=spd*0.48; if(BG.cx<-W)BG.cx+=W;
+  for(var cp=0;cp<2;cp++){
+    BG.city.forEach(function(b){
+      var bx=b.x+BG.cx+cp*W;
+      if(bx>-60&&bx<W+60){
+        ctx.fillStyle='rgba(8,3,20,0.92)';ctx.fillRect(bx,GROUND-b.h,b.w,b.h);
+        // Windows
+        for(var wy=GROUND-b.h+5;wy<GROUND-6;wy+=9){
+          for(var wx=bx+3;wx<bx+b.w-3;wx+=7){
+            if((Math.sin(wx*13.7+wy*7.3))>0.3){
+              ctx.fillStyle='rgba(255,220,80,0.12)';ctx.fillRect(wx,wy,4,5);
+            }
+          }
         }
-        observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.15 });
+  }
+  // Ground
+  var gr=ctx.createLinearGradient(0,GROUND,0,H);
+  gr.addColorStop(0,'#160820');gr.addColorStop(1,'#060610');
+  ctx.fillStyle=gr;ctx.fillRect(0,GROUND,W,H-GROUND);
+  // Ground glow line
+  ctx.save();
+  ctx.shadowColor='#e8192c';ctx.shadowBlur=14;
+  ctx.strokeStyle='rgba(232,25,44,0.75)';ctx.lineWidth=2.5;
+  ctx.beginPath();ctx.moveTo(0,GROUND);ctx.lineTo(W,GROUND);ctx.stroke();
+  ctx.restore();
+  // Perspective grid
+  if(!G.goff)G.goff=0;
+  G.goff=(G.goff+spd*0.75)%56;
+  ctx.strokeStyle='rgba(232,25,44,0.06)';ctx.lineWidth=1;
+  var vp={x:W/2,y:GROUND};
+  for(var gx=-G.goff;gx<W+56;gx+=56){
+    ctx.beginPath();ctx.moveTo(gx,GROUND);ctx.lineTo(vp.x+(gx-vp.x)*0.1,H);ctx.stroke();
+  }
+  for(var gy=0;gy<=4;gy++){
+    var gyy=GROUND+(H-GROUND)*(gy/4);
+    ctx.globalAlpha=0.35*(1-gy/4);ctx.beginPath();ctx.moveTo(0,gyy);ctx.lineTo(W,gyy);ctx.stroke();ctx.globalAlpha=1;
+  }
+}
 
-  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .counter').forEach(el => observer.observe(el));
+/* ─── OBSTACLES ─── */
+// All obstacle heights are capped to safeObsH() so they're always jumpable
+var OBST=[];
+var obstT=0,obstNext=80;
 
-  // === COUNTER ===
-  function animateCounter(el) {
-    const end = parseInt(el.dataset.end);
-    const suffix = el.dataset.suffix || '';
-    const duration = 2000;
-    const start = performance.now();
-    function update(now) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const value = Math.round(eased * end);
-      el.textContent = value + suffix;
-      if (progress < 1) requestAnimationFrame(update);
+// Obstacle types — heights defined as fraction of safeObsH(), NOT of H
+var OBS_TYPES=[
+  // Classic block
+  function(safe){var w=Math.round(W*0.068),h=Math.round(safe*(0.55+Math.random()*0.35));return{w:w,h:h,c:'#bb0018',c2:'#ff4455',style:'box'};},
+  // Tall thin
+  function(safe){var w=Math.round(W*0.045),h=Math.round(safe*(0.7+Math.random()*0.28));return{w:w,h:h,c:'#770099',c2:'#cc44ff',style:'box'};},
+  // Wide flat
+  function(safe){var w=Math.round(W*0.14),h=Math.round(safe*(0.35+Math.random()*0.25));return{w:w,h:h,c:'#003399',c2:'#4499ff',style:'box'};},
+  // Spike
+  function(safe){var w=Math.round(W*0.055),h=Math.round(safe*(0.55+Math.random()*0.35));return{w:w,h:h,c:'#005500',c2:'#00ee44',style:'spike'};},
+  // Double spike cluster
+  function(safe){var w=Math.round(W*0.09),h=Math.round(safe*(0.5+Math.random()*0.3));return{w:w,h:h,c:'#884400',c2:'#ffaa00',style:'multi'};},
+];
+
+function spawnObs(){
+  var d=DIFF[diffIdx];
+  var safe=safeObsH();
+  var fn=OBS_TYPES[Math.floor(Math.random()*OBS_TYPES.length)];
+  var t=fn(safe);
+  OBST.push({x:W+10, y:GROUND-t.h, w:t.w, h:t.h, c:t.c, c2:t.c2, style:t.style, pulse:0});
+  // Occasionally add a second obstacle with safe gap
+  if(G.dist>30&&Math.random()<0.22){
+    var fn2=OBS_TYPES[Math.floor(Math.random()*OBS_TYPES.length)];
+    var t2=fn2(safe);
+    var gap=Math.round(W*(0.22+Math.random()*0.12));
+    OBST.push({x:W+10+t.w+gap, y:GROUND-t2.h, w:t2.w, h:t2.h, c:t2.c, c2:t2.c2, style:t2.style, pulse:0});
+  }
+  obstNext=d.spawnLo+Math.random()*(d.spawnHi-d.spawnLo);
+  obstT=0;
+}
+
+function updateObs(spd){
+  obstT++;if(obstT>=obstNext)spawnObs();
+  for(var i=OBST.length-1;i>=0;i--){
+    OBST[i].x-=spd;OBST[i].pulse=(OBST[i].pulse||0)+0.07;
+    if(OBST[i].x<-OBST[i].w-5)OBST.splice(i,1);
+  }
+}
+
+function drawObs(){
+  OBST.forEach(function(o){
+    ctx.save();
+    var glow=0.4+Math.sin(o.pulse||0)*0.15;
+    ctx.shadowColor=o.c; ctx.shadowBlur=12+glow*6;
+    if(o.style==='spike'||o.style==='multi'){
+      var nc=o.style==='multi'?3:1;
+      var sw=o.w/(nc+(nc>1?0.5:0));
+      for(var si=0;si<nc;si++){
+        var sx=o.x+si*(sw*1.18);
+        var g=ctx.createLinearGradient(sx,o.y,sx,o.y+o.h);
+        g.addColorStop(0,o.c2);g.addColorStop(1,o.c);ctx.fillStyle=g;
+        ctx.beginPath();ctx.moveTo(sx+sw/2,o.y);ctx.lineTo(sx+sw,o.y+o.h);ctx.lineTo(sx,o.y+o.h);ctx.closePath();ctx.fill();
+        // Highlight edge
+        ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(sx+sw/2,o.y);ctx.lineTo(sx+sw,o.y+o.h);ctx.stroke();
+      }
+    } else {
+      var g2=ctx.createLinearGradient(o.x,o.y,o.x+o.w,o.y+o.h);
+      g2.addColorStop(0,o.c2);g2.addColorStop(1,o.c);ctx.fillStyle=g2;
+      rrect(ctx,o.x,o.y,o.w,o.h,5);ctx.fill();
+      // Top highlight
+      ctx.fillStyle='rgba(255,255,255,0.14)';rrect(ctx,o.x+3,o.y+3,o.w-6,Math.min(o.h*0.3,14),3);ctx.fill();
+      // Danger stripes
+      ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1.5;
+      for(var dl=1;dl<=2;dl++){
+        ctx.beginPath();ctx.moveTo(o.x+o.w*0.15*dl,o.y+o.h*0.18);ctx.lineTo(o.x+o.w*0.15*dl+o.w*0.08,o.y+o.h*0.8);ctx.stroke();
+      }
     }
-    requestAnimationFrame(update);
+    ctx.shadowBlur=0;ctx.restore();
+  });
+}
+
+/* ─── COINS ─── */
+var CTYPES=[
+  {e:'🪙',v:1,c:'#f5c518'},{e:'💎',v:5,c:'#00d4ff'},{e:'⭐',v:3,c:'#ff6070'}
+];
+var COINS=[];
+var coinT=0,coinNext=50;
+
+function spawnCoins(){
+  var t=CTYPES[Math.floor(Math.random()*CTYPES.length)];
+  var n=1+Math.floor(Math.random()*5);
+  var baseY=GROUND-PH*(1.1+Math.random()*1.4);
+  for(var i=0;i<n;i++){
+    COINS.push({x:W+20+i*32,y:baseY,e:t.e,v:t.v,c:t.c,a:Math.random()*Math.PI*2,done:false});
   }
+  coinNext=50+Math.random()*80; coinT=0;
+}
 
-  // === GALLERY LIGHTBOX ===
-  const galleryImgs = [
-    { src: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=1200&q=90', alt: 'Patio et palmiers' },
-    { src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=90', alt: "Terrasse et vue sur l'Atlas" },
-    { src: 'https://images.unsplash.com/photo-1567518060498-3d3cc5ec2f67?w=1200&q=90', alt: 'Petit-déjeuner marocain' },
-    { src: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=90', alt: 'Hammam traditionnel' },
-    { src: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=90', alt: 'Bassin et jardin' },
-    { src: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=1200&q=90', alt: 'Porte traditionnelle' },
-  ];
-  let currentLight = 0;
-
-  function openLightbox(i) {
-    currentLight = i;
-    updateLightbox();
-    const lb = document.getElementById('lightbox');
-    lb.classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    // Build thumbs
-    const thumbs = document.getElementById('lightbox-thumbs');
-    thumbs.innerHTML = '';
-    galleryImgs.forEach((img, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'relative h-10 w-14 overflow-hidden transition-all duration-300';
-      btn.style.opacity = idx === i ? '1' : '0.3';
-      btn.style.outline = idx === i ? '1px solid rgba(255,255,255,0.6)' : 'none';
-      btn.onclick = (e) => { e.stopPropagation(); currentLight = idx; updateLightbox(); };
-      const im = document.createElement('img');
-      im.src = galleryImgs[idx].src.replace('w=1200', 'w=120');
-      im.className = 'h-full w-full object-cover';
-      btn.appendChild(im);
-      thumbs.appendChild(btn);
-    });
-
-    document.addEventListener('keydown', lbKey);
-    document.getElementById('lightbox').onclick = closeLightbox;
-    document.querySelector('#lightbox .relative').onclick = e => e.stopPropagation();
+function updateCoins(spd){
+  coinT++;if(coinT>=coinNext)spawnCoins();
+  for(var i=COINS.length-1;i>=0;i--){
+    var c=COINS[i];c.x-=spd;c.a+=0.06;
+    if(c.done||c.x<-30)COINS.splice(i,1);
   }
+}
 
-  function updateLightbox() {
-    document.getElementById('lightbox-img').src = galleryImgs[currentLight].src;
-    document.getElementById('lightbox-caption').textContent = `${galleryImgs[currentLight].alt} — ${currentLight + 1}/${galleryImgs.length}`;
-    document.querySelectorAll('#lightbox-thumbs button').forEach((btn, i) => {
-      btn.style.opacity = i === currentLight ? '1' : '0.3';
-      btn.style.outline = i === currentLight ? '1px solid rgba(255,255,255,0.6)' : 'none';
-    });
+function drawCoins(){
+  COINS.forEach(function(c){
+    ctx.save();
+    ctx.shadowColor=c.c;ctx.shadowBlur=14;
+    var fs=Math.round(PW*0.82);
+    ctx.font=fs+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(c.e, c.x, c.y+Math.sin(c.a)*5);
+    ctx.restore();
+  });
+}
+
+/* ─── PARTICLES ─── */
+var PARTS=[];
+function burst(x,y,col,n){
+  for(var i=0;i<(n||8);i++){
+    var a=Math.random()*Math.PI*2,sp=1.2+Math.random()*5.5;
+    PARTS.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,life:1,col:col||'#e8192c',r:1.5+Math.random()*4});
   }
-
-  function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('active');
-    document.body.style.overflow = '';
-    document.removeEventListener('keydown', lbKey);
+}
+function updateParts(){
+  for(var i=PARTS.length-1;i>=0;i--){
+    var p=PARTS[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.vx*=0.97;p.life-=0.032;
+    if(p.life<=0)PARTS.splice(i,1);
   }
-  function nextLight() { currentLight = (currentLight + 1) % galleryImgs.length; updateLightbox(); }
-  function prevLight() { currentLight = (currentLight - 1 + galleryImgs.length) % galleryImgs.length; updateLightbox(); }
-  function lbKey(e) {
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') nextLight();
-    if (e.key === 'ArrowLeft') prevLight();
+}
+function drawParts(){
+  PARTS.forEach(function(p){
+    ctx.save();ctx.globalAlpha=Math.max(0,p.life);
+    ctx.fillStyle=p.col;
+    ctx.beginPath();ctx.arc(p.x,p.y,Math.max(0,p.r*p.life),0,Math.PI*2);ctx.fill();
+    ctx.restore();
+  });
+}
+
+/* ─── COLLISIONS ─── */
+function aabb(ax,ay,aw,ah,bx,by,bw,bh){return ax<bx+bw&&ax+aw>bx&&ay<by+bh&&ay+ah>by;}
+
+function checkCols(){
+  if(!PLR||PLR.inv>0||PLR.dead)return;
+  var margin=5;
+  var px=PLR.x+margin, py=PLR.y+margin, pw=PW-margin*2, ph=PH-margin;
+  // Obstacles
+  for(var i=0;i<OBST.length;i++){
+    var o=OBST[i];
+    if(aabb(px,py,pw,ph,o.x+3,o.y+3,o.w-6,o.h-6)){hitPlayer();return;}
   }
-
-  // === TESTIMONIALS ===
-  let activeT = 0;
-  let tInterval = setInterval(() => setTestimonial((activeT + 1) % 4), 6000);
-
-  function setTestimonial(i) {
-    document.getElementById('t' + activeT).style.opacity = '0';
-    document.getElementById('t' + activeT).style.transform = 'translateY(15px) scale(0.98)';
-    document.getElementById('t' + activeT).style.pointerEvents = 'none';
-    document.getElementById('dot' + activeT).style.width = '8px';
-    document.getElementById('dot' + activeT).style.background = 'rgba(255,255,255,0.15)';
-
-    activeT = i;
-
-    document.getElementById('t' + activeT).style.opacity = '1';
-    document.getElementById('t' + activeT).style.transform = 'translateY(0) scale(1)';
-    document.getElementById('t' + activeT).style.pointerEvents = 'auto';
-    document.getElementById('dot' + activeT).style.width = '40px';
-    document.getElementById('dot' + activeT).style.background = 'hsl(18,50%,38%)';
-
-    clearInterval(tInterval);
-    tInterval = setInterval(() => setTestimonial((activeT + 1) % 4), 6000);
+  // Coins
+  for(var j=0;j<COINS.length;j++){
+    var c=COINS[j];if(c.done)continue;
+    if(aabb(px,py,pw,ph,c.x-15,c.y-15,30,30)){
+      c.done=true;
+      G.coins+=c.v;
+      G.combo=Math.min(G.combo+1,8);
+      var pts=c.v*10*G.combo;
+      G.bonusScore+=pts;
+      snd(580,.05,'sine',.1);snd(780,.06,'sine',.07);
+      burst(c.x,c.y,c.c,8);
+      floatTxt('+'+(pts)+' ×'+G.combo,c.x,c.y,c.c);
+      updateComboUI();
+      clearTimeout(G.comboReset);
+      G.comboReset=setTimeout(function(){G.combo=1;updateComboUI();},2000);
+    }
   }
+}
 
-  // === RESERVATION FORM ===
-  function submitForm(e) {
-    e.preventDefault();
-    document.getElementById('reservation-form').style.display = 'none';
-    const success = document.getElementById('form-success');
-    success.classList.remove('hidden');
-    success.style.display = 'flex';
+function updateComboUI(){
+  var el=document.getElementById('hud-combo');
+  if(G.combo>1){el.textContent='COMBO ×'+G.combo;el.style.opacity='1';el.style.color=G.combo>=5?'#f5c518':'#00d4ff';}
+  else{el.style.opacity='0';}
+}
+
+/* ─── HIT PLAYER ─── */
+var SK={a:0,d:0};
+function shake(a,d){SK.a=a;SK.d=d;}
+
+function hitPlayer(){
+  G.lives--;refreshLives();G.combo=1;updateComboUI();
+  snd(120,.2,'sawtooth',.2);
+  burst(PLR.x+PW/2,PLR.y+PH/2,'#e8192c',20);
+  shake(9,28);
+  if(G.lives<=0){gameOver();}
+  else{PLR.inv=90;toast('❤️ TOUCHÉ — '+G.lives+' vie'+(G.lives>1?'s':'')+' restante'+(G.lives>1?'s':''),'#990010');}
+}
+
+function refreshLives(){
+  var el=document.getElementById('hud-lives');el.innerHTML='';
+  var max=DIFF[diffIdx].lives;
+  for(var i=0;i<max;i++){var h=document.createElement('span');h.className='heart'+(i>=G.lives?' off':'');h.textContent='❤️';el.appendChild(h);}
+}
+
+/* ─── FLOAT TEXT ─── */
+function floatTxt(txt,x,y,col){
+  var wrap=document.getElementById('cv-wrap');
+  var d=document.createElement('div');d.className='ft';d.textContent=txt;d.style.color=col||'#f5c518';
+  d.style.left=Math.min(Math.max(x,40),W-40)+'px';
+  d.style.top=Math.max(y-10,20)+'px';
+  wrap.appendChild(d);
+  setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},800);
+}
+
+/* ─── MILESTONES ─── */
+var MILES=[300,800,1500,3000,6000,12000];var mileIdx=0;
+function checkMile(){
+  if(mileIdx<MILES.length&&G.score>=MILES[mileIdx]){
+    [440,554,659,880].forEach(function(f,i){setTimeout(function(){snd(f,.1,'sine',.12);},i*65);});
+    floatTxt('LEVEL UP! 🔥',W/2,GROUND*0.38,'#f5c518');
+    mileIdx++;
   }
-  function resetForm() {
-    document.getElementById('reservation-form').style.display = 'flex';
-    document.getElementById('reservation-form').reset();
-    const success = document.getElementById('form-success');
-    success.classList.add('hidden');
-    success.style.display = 'none';
-  }
+}
+
+/* ─── AUDIO ─── */
+var AC;
+function getAC(){try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC;}catch(e){return null;}}
+function snd(freq,dur,type,vol){
+  var ac=getAC();if(!ac)return;
+  try{
+    var o=ac.createOscillator(),g=ac.createGain();
+    o.connect(g);g.connect(ac.destination);
+    o.type=type||'sine';o.frequency.value=freq;
+    var t=ac.currentTime;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol||0.1,t+0.01);
+    g.gain.linearRampToValueAtTime(0,t+dur+0.03);
+    o.start(t);o.stop(t+dur+0.06);
+  }catch(e){}
+}
+
+/* ─── MAIN LOOP ─── */
+function loop(ts){
+  RAF=requestAnimationFrame(loop);
+  if(paused)return;
+  var dt=Math.min((ts-lastT)/16.667, 2.2);
+  lastT=ts;
+
+  // Speed ramp (gradual, capped)
+  G.spd=Math.min(G.spd+0.0009*dt, DIFF[diffIdx].spd+8);
+  G.dist+=G.spd*dt*0.05;
+  G.score=Math.floor(G.dist*10)+G.bonusScore;
+  checkMile();
+
+  updatePlayer();
+  updateObs(G.spd*dt);
+  updateCoins(G.spd*dt);
+  checkCols();
+  updateParts();
+
+  // Shake
+  var sx=0,sy=0;
+  if(SK.d>0){sx=(Math.random()-0.5)*SK.a;sy=(Math.random()-0.5)*SK.a;SK.d--;SK.a*=0.84;}
+
+  ctx.save();
+  if(sx||sy)ctx.translate(sx,sy);
+  drawBG(G.spd*dt);
+  drawCoins();
+  drawObs();
+  drawPlayer();
+  drawParts();
+  // Speed ramp bar
+  var ramp=Math.min((G.spd-DIFF[diffIdx].spd)/8,1);
+  ctx.fillStyle='rgba(232,25,44,'+(0.07+ramp*0.1)+')';
+  ctx.fillRect(0,GROUND-3,W*ramp,3);
+  ctx.restore();
+
+  // HUD
+  document.getElementById('hud-score').textContent=G.score;
+  document.getElementById('hud-coin-v').textContent=G.coins;
+}
+
+/* ─── INIT ─── */
+function initGame(){
+  sizeCanvas();
+  buildBG();
+  initPlayer();
+  var d=DIFF[diffIdx];
+  G={spd:d.spd,lives:d.lives,score:0,bonusScore:0,dist:0,coins:0,combo:1,comboReset:null,goff:0};
+  OBST=[];COINS=[];PARTS=[];obstT=0;obstNext=d.spawnLo+d.spawnHi>>1;coinT=0;coinNext=55;
+  mileIdx=0;SK={a:0,d:0};paused=false;
+  document.getElementById('hud-score').textContent='0';
+  document.getElementById('hud-coin-v').textContent='0';
+  document.getElementById('hud-combo').style.opacity='0';
+  document.getElementById('hud-best').textContent='BEST '+getBest();
+  refreshLives();
+  if(RAF)cancelAnimationFrame(RAF);
+  show('game-scr');
+  lastT=performance.now();
+  RAF=requestAnimationFrame(loop);
+}
+
+/* ─── GAME OVER ─── */
+function gameOver(){
+  if(PLR){PLR.dead=true;PLR.inv=9999;}
+  [200,160,120,80].forEach(function(f,i){setTimeout(function(){snd(f,.18,'sawtooth',.18);},i*90);});
+  burst(PLR?PLR.x+PW/2:W/2,PLR?PLR.y+PH/2:H/2,'#e8192c',28);
+  cancelAnimationFrame(RAF);RAF=null;
+  var best=getBest(),isNew=G.score>best;
+  if(isNew)setBest(G.score);
+  setTimeout(function(){
+    document.getElementById('go-score').textContent=G.score;
+    document.getElementById('go-best').textContent=isNew?G.score:best;
+    document.getElementById('go-coins').textContent=G.coins;
+    document.getElementById('go-dist').textContent=Math.floor(G.dist)+'m';
+    document.getElementById('go-newbest').style.display=isNew?'block':'none';
+    document.getElementById('s-best-v').textContent=isNew?G.score:best;
+    show('go-scr');
+  },700);
+}
+
+/* ─── PAUSE ─── */
+function togglePause(){
+  if(!document.getElementById('game-scr').classList.contains('on'))return;
+  paused=!paused;
+  document.getElementById('pause-scr').classList.toggle('on',paused);
+  document.getElementById('pause-ic').textContent=paused?'▶':'⏸';
+  if(!paused){lastT=performance.now();RAF=requestAnimationFrame(loop);}
+}
+
+/* ─── EVENTS ─── */
+document.getElementById('play-btn').addEventListener('click',initGame);
+document.getElementById('retry-btn').addEventListener('click',initGame);
+document.getElementById('home-btn').addEventListener('click',function(){
+  if(RAF)cancelAnimationFrame(RAF);RAF=null;
+  window.location.href='https://cocopiete50-sys.github.io/Fl-chettes_game/';
+});
+document.getElementById('pause-ic').addEventListener('click',togglePause);
+document.getElementById('resume-btn').addEventListener('click',togglePause);
+document.getElementById('quit-btn').addEventListener('click',function(){paused=false;if(RAF)cancelAnimationFrame(RAF);RAF=null;document.getElementById('pause-scr').classList.remove('on');show('start-scr');});
+
+// Jump input
+var lastTap=0;
+cv.addEventListener('touchstart',function(e){e.preventDefault();jump();},{passive:false});
+cv.addEventListener('mousedown',function(){jump();});
+document.addEventListener('keydown',function(e){
+  if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump();}
+  if(e.code==='Escape')togglePause();
+});
+
+// Resize
+window.addEventListener('resize',function(){
+  if(document.getElementById('game-scr').classList.contains('on'))sizeCanvas();
+});
+
+/* ─── LIQUID BUTTONS ─── */
+document.querySelectorAll('.play-btn,.go-retry,.go-home,.p-btn,.db').forEach(function(el){
+  if(el.dataset.lq)return; el.dataset.lq='1';
+  if(getComputedStyle(el).position==='static')el.style.position='relative';
+  el.style.overflow='hidden';
+  var dot=document.createElement('span');
+  dot.style.cssText='position:absolute;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),rgba(255,255,255,0) 65%);pointer-events:none;transform:translate(-50%,-50%);opacity:0;transition:opacity .3s;z-index:99;';
+  el.appendChild(dot);
+  function dn(e){var r=el.getBoundingClientRect(),t=e.touches?e.touches[0]:e;dot.style.left=(t.clientX-r.left)+'px';dot.style.top=(t.clientY-r.top)+'px';dot.style.opacity='1';el.style.transform='scale(.95)';el.style.transition='transform .12s cubic-bezier(.2,.8,.3,1.3)';}
+  function up(){dot.style.opacity='0';el.style.transform='scale(1)';el.style.transition='transform .5s cubic-bezier(.34,1.56,.64,1)';}
+  el.addEventListener('mousedown',dn);el.addEventListener('mouseup',up);el.addEventListener('mouseleave',up);
+  el.addEventListener('touchstart',dn,{passive:true});el.addEventListener('touchend',up,{passive:true});
+});
+
+/* ─── INIT BEST ─── */
+document.getElementById('s-best-v').textContent=getBest();
 </script>
 
 </body>
