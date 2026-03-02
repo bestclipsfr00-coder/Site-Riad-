@@ -3,7 +3,9 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="HandheldFriendly" content="true">
+<meta name="MobileOptimized" content="width">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#060610">
@@ -11,8 +13,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;}
-html,body{width:100%;height:100%;overflow:hidden;background:#060610;font-family:'Rajdhani',sans-serif;}
-.scr{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+html{width:100%;height:100%;height:100dvh;}
+body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#060610;font-family:'Rajdhani',sans-serif;position:fixed;top:0;left:0;right:0;bottom:0;}
+.scr{position:fixed;top:0;left:0;width:100%;height:100%;height:100dvh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
 .scr.on{display:flex;}
 .gl{background:linear-gradient(140deg,rgba(255,255,255,.09),rgba(255,255,255,.02),rgba(255,255,255,.05));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.11);box-shadow:0 20px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.12);}
 #s-icon{font-size:5rem;text-align:center;display:block;animation:fl 2.8s ease-in-out infinite;filter:drop-shadow(0 12px 32px rgba(232,25,44,.6));}
@@ -48,7 +51,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#060610;font-family:
 #cv-wrap{position:relative;flex:1;width:100%;min-height:0;}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;}
 #pause-ic{position:absolute;bottom:16px;right:14px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;z-index:10;}
-#pause-scr{position:fixed;inset:0;z-index:50;background:rgba(6,6,16,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+#pause-scr{position:fixed;top:0;left:0;width:100%;height:100%;height:100dvh;z-index:50;background:rgba(6,6,16,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
 #pause-scr.on{display:flex;}
 #pause-scr h2{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:.14em;color:#f0f0f8;margin-bottom:5px;}
 #pause-scr p{font-size:.54rem;letter-spacing:.2em;color:#7070a0;margin-bottom:30px;}
@@ -75,15 +78,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#060610;font-family:
 .ft{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;pointer-events:none;z-index:20;animation:fta .75s ease-out forwards;transform:translateX(-50%);}
 @keyframes fta{0%{opacity:1;transform:translateX(-50%) translateY(0);}100%{opacity:0;transform:translateX(-50%) translateY(-52px);}}
 
-/* ── FPS HUD discret — coin bas-droit, toutes interfaces ── */
-#fps-hud{
-position:fixed;bottom:8px;right:10px;z-index:9997;
-font-size:.46rem;font-family:‘Rajdhani’,monospace;font-weight:700;
-letter-spacing:.07em;color:rgba(255,255,255,.28);
-pointer-events:none;padding:2px 6px;border-radius:6px;
-background:rgba(0,0,0,.2);line-height:1.4;
-transition:color .6s;
-}
+/* ── FPS HUD discret ── */
+#fps-hud{position:fixed;bottom:8px;right:10px;z-index:9997;font-size:.46rem;font-family:‘Rajdhani’,monospace;font-weight:700;letter-spacing:.07em;color:rgba(255,255,255,.28);pointer-events:none;padding:2px 6px;border-radius:6px;background:rgba(0,0,0,.2);line-height:1.4;transition:color .6s;}
 
 /* ══ PERF CLASSES CSS ══ */
 body.perf-low .gl,body.perf-mid .gl{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(10,10,22,.93)!important;box-shadow:0 20px 60px rgba(0,0,0,.8)!important;}
@@ -103,8 +99,6 @@ body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
 
 </head>
 <body>
-
-<!-- FPS HUD discret — visible sur toutes les interfaces -->
 
 <div id="fps-hud">H·—fps</div>
 <div id="toast"></div>
@@ -129,7 +123,6 @@ body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
       <div class="db" data-d="1">NORMAL</div>
       <div class="db" data-d="2">HARD</div>
     </div>
-    <!-- ══ TOGGLE PERFORMANCE ══ -->
     <div class="perf-tog">
       <div class="perf-tog-info">
         <span class="perf-tog-title">⚡ OPTIMISATION AUTO</span>
@@ -201,91 +194,30 @@ body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
 <script>
 'use strict';
 
-/* ══════════════════════════════════════════════════════════════════
-   PERF ENGINE v5 — PIXEL RUN
-
-   PRINCIPE FONDAMENTAL :
-   ─────────────────────
-   Le HARDWARE détermine le PLAFOND du tier. Les FPS ne peuvent
-   QUE descendre sous ce plafond, jamais remonter au-dessus de ce
-   que le matériel peut réellement supporter.
-
-   TIERS :
-   · HIGH  → téléphone récent, GPU/RAM/CPU performants
-   · MID   → appareil moyen, optimisations partielles
-   · LOW   → vieux appareil, toutes optimisations actives
-
-   ANTI-OSCILLATION :
-   · EMA lente (α=0.88) : lisse les pics FPS avant toute décision
-   · Seuils asymétriques : descendre est facile, monter est très dur
-   · Cooldown down = 4s  |  cooldown up = 30s
-   · Confirmations : 3 mesures pour descendre, 10 pour monter
-   · Zone tampon (hysteresis) entre seuils down/up
-
-   RÈGLES ABSOLUES pour toute future IA :
-   ───────────────────────────────────────
-   1. NE PAS baser la montée de tier uniquement sur les FPS
-      → Un vieux tel qui monte à 55fps en LOW doit rester LOW
-        si son score hardware est LOW
-   2. hwTier est calculé UNE FOIS au benchmark, c'est le PLAFOND
-   3. Les FPS ne déclenchent qu'une descente en dessous du plafond
-   4. La montée nécessite : score HW suffisant + FPS stables longtemps
-   5. NE PAS réduire les cooldowns côté "up" — c'est ce qui cause
-      l'oscillation classique
-   6. EMA doit être lente (≥ 0.80) pour ne pas sur-réagir
-══════════════════════════════════════════════════════════════════ */
+/* ══ PERF ENGINE v5 ══ */
 var PERF = (function(){
-
   var CFG = {
     gpuIter:50, gpuFastMs:16, gpuSlowMs:48,
-
-    /* Seuils hardware (score 0-100) — définissent le PLAFOND */
-    hwHighMin:62,
-    hwMidMin :28,
-
-    /* Seuils FPS pour DESCENDRE (réactif) */
-    fpsDnHigh:34,   /* HIGH→MID si FPS < 34 confirmé */
-    fpsDnMid :20,   /* MID →LOW si FPS < 20 confirmé */
-
-    /* Seuils FPS pour MONTER (très conservateur)
-       Doit être BIEN au-dessus du seuil de descente correspondant */
-    fpsUpMid :56,   /* LOW→MID  nécessite FPS > 56 longtemps */
-    fpsUpHigh:68,   /* MID→HIGH nécessite FPS > 68 longtemps */
-
-    /* Cooldowns asymétriques (ms) */
-    coolDown:4000,  /* min 4s  entre deux descentes */
-    coolUp  :30000, /* min 30s entre deux montées   */
-
-    /* Confirmations consécutives avant changement */
-    confirmDn:3,    /* 3 mesures basses  → descend (~2.4s) */
-    confirmUp:10,   /* 10 mesures hautes → monte  (~8s)    */
-
-    fpsEMA:0.88,    /* EMA FPS — plus élevé = plus stable/lent */
-
-    renderMinMs:28, /* ~35fps max rendu sur LOW */
-    partMul:  { high:1.0, mid:0.6,  low:0.15 },
-    stars:    { high:80,  mid:48,   low:16   },
+    hwHighMin:62, hwMidMin:28,
+    fpsDnHigh:34, fpsDnMid:20,
+    fpsUpMid:56,  fpsUpHigh:68,
+    coolDown:4000, coolUp:30000,
+    confirmDn:3,   confirmUp:10,
+    fpsEMA:0.88,
+    renderMinMs:28,
+    partMul:{ high:1.0, mid:0.6, low:0.15 },
+    stars:{ high:80, mid:48, low:16 },
   };
-
   var S = {
-    tier     :'high',
-    enabled  :true,
-    fpsSmooth:60,
+    tier:'high', enabled:true, fpsSmooth:60,
     _fpsFrames:0, _fpsLast:0,
-    gpuScore :50, ramScore:50, cpuScore:50,
-    hwTier   :'high',  /* plafond hardware — fixé après benchmark */
-    hwScore  :50,
-    lowBat   :false,
-    _dnStreak:0,       /* mesures consécutives en dessous seuil */
-    _upStreak:0,       /* mesures consécutives au-dessus seuil  */
-    _lastChange:0,     /* timestamp du dernier changement */
-    _benchDone:false,
-    _renderLast:0,
+    gpuScore:50, ramScore:50, cpuScore:50,
+    hwTier:'high', hwScore:50,
+    lowBat:false,
+    _dnStreak:0, _upStreak:0, _lastChange:0, _benchDone:false, _renderLast:0,
   };
-
   var ORD = {high:2, mid:1, low:0};
 
-  /* ════ RAF FPS — tourne en permanence, menu ou jeu ════ */
   function _fpsLoop(ts){
     requestAnimationFrame(_fpsLoop);
     S._fpsFrames++;
@@ -293,15 +225,12 @@ var PERF = (function(){
     var elapsed=ts-S._fpsLast;
     if(elapsed<700) return;
     var raw=S._fpsFrames*(1000/elapsed);
-    /* EMA lente — amortit les pics ponctuels */
     S.fpsSmooth=S.fpsSmooth*CFG.fpsEMA + raw*(1-CFG.fpsEMA);
-    S._fpsFrames=0;
-    S._fpsLast=ts;
+    S._fpsFrames=0; S._fpsLast=ts;
     if(S._benchDone) _recalc();
     _updateHUD();
   }
 
-  /* ════ Benchmark GPU ════ */
   function _benchGPU(){
     try{
       var c=document.createElement('canvas'); c.width=c.height=128;
@@ -316,9 +245,7 @@ var PERF = (function(){
         cx.fillStyle=g; cx.fillRect(0,0,128,128);
       }
       var ms=performance.now()-t0;
-      S.gpuScore=Math.max(0,Math.min(100,
-        100-(ms-CFG.gpuFastMs)*(100/(CFG.gpuSlowMs-CFG.gpuFastMs))
-      ));
+      S.gpuScore=Math.max(0,Math.min(100,100-(ms-CFG.gpuFastMs)*(100/(CFG.gpuSlowMs-CFG.gpuFastMs))));
     }catch(e){ S.gpuScore=35; }
   }
 
@@ -331,14 +258,12 @@ var PERF = (function(){
     catch(e){ S.cpuScore=30; }
   }
 
-  /* ════ Calcul hwTier (PLAFOND) — appelé UNE SEULE FOIS ════ */
   function _computeHWTier(){
     S.hwScore=S.gpuScore*0.55+S.ramScore*0.25+S.cpuScore*0.20;
     if(S.lowBat) S.hwScore-=15;
     S.hwScore=Math.max(0,Math.min(100,S.hwScore));
     S.hwTier=S.hwScore>=CFG.hwHighMin?'high':S.hwScore>=CFG.hwMidMin?'mid':'low';
     if(ORD[S.tier]>ORD[S.hwTier]) S.tier=S.hwTier;
-    /* Description dans le toggle */
     var sub=document.getElementById('perf-tog-sub');
     if(sub){
       var desc=S.hwTier==='high'?'Appareil performant — effets complets':
@@ -354,52 +279,33 @@ var PERF = (function(){
     try{
       if(!navigator.getBattery) return;
       navigator.getBattery().then(function(b){
-        function upd(){
-          var was=S.lowBat;
-          S.lowBat=b.level<0.20&&!b.charging;
-          if(was!==S.lowBat) _computeHWTier();
-        }
+        function upd(){ var was=S.lowBat; S.lowBat=b.level<0.20&&!b.charging; if(was!==S.lowBat) _computeHWTier(); }
         b.addEventListener('levelchange',upd); b.addEventListener('chargingchange',upd); upd();
       }).catch(function(){});
     }catch(e){}
   }
 
-  /* ════ Décision de tier — hardware est le PLAFOND ════
-     Un vieux tel qui remonte à 60fps en LOW ne monte PAS
-     si son hwTier est LOW — son matériel ne peut pas gérer. */
   function _recalc(){
     if(!S.enabled) return;
     var now=performance.now(), fps=S.fpsSmooth;
-
     var wantDn=false, wantUp=false;
     if(S.tier==='high'&&fps<CFG.fpsDnHigh) wantDn=true;
     if(S.tier==='mid' &&fps<CFG.fpsDnMid ) wantDn=true;
-    /* Montée seulement si le hardware le supporte ET FPS très stable */
     if(S.tier==='low'&&fps>CFG.fpsUpMid &&ORD[S.hwTier]>=1) wantUp=true;
     if(S.tier==='mid'&&fps>CFG.fpsUpHigh&&S.hwTier==='high') wantUp=true;
-
     if(wantDn){ S._dnStreak++; S._upStreak=0; }
     else if(wantUp){ S._upStreak++; S._dnStreak=0; }
     else{ S._dnStreak=0; S._upStreak=0; }
-
     var nt=S.tier, dt=now-S._lastChange;
-
-    /* ── Descente : rapide ── */
     if(S._dnStreak>=CFG.confirmDn&&dt>CFG.coolDown){
-      if(S.tier==='high') nt='mid';
-      else if(S.tier==='mid') nt='low';
+      if(S.tier==='high') nt='mid'; else if(S.tier==='mid') nt='low';
       S._dnStreak=0; S._upStreak=0;
-    }
-    /* ── Montée : très lente ── */
-    else if(S._upStreak>=CFG.confirmUp&&dt>CFG.coolUp){
+    } else if(S._upStreak>=CFG.confirmUp&&dt>CFG.coolUp){
       if(S.tier==='low'&&ORD[S.hwTier]>=1) nt='mid';
       else if(S.tier==='mid'&&S.hwTier==='high') nt='high';
       S._dnStreak=0; S._upStreak=0;
     }
-
-    /* PLAFOND ABSOLU : jamais au-dessus du hardware */
     if(ORD[nt]>ORD[S.hwTier]) nt=S.hwTier;
-
     if(nt!==S.tier){ S.tier=nt; S._lastChange=now; _applyTier(); }
   }
 
@@ -409,17 +315,12 @@ var PERF = (function(){
     _GC.clear();
   }
 
-  /* ════ HUD FPS discret + bouton settings ════ */
   function _updateHUD(){
     var fps=Math.round(S.fpsSmooth);
     var tierLbl=S.tier==='high'?'H':S.tier==='mid'?'M':'L';
     var fpsCol=fps>=55?'rgba(45,198,83,.55)':fps>=35?'rgba(245,197,24,.55)':'rgba(232,25,44,.55)';
-
-    /* FPS HUD discret — toujours visible */
     var hud=document.getElementById('fps-hud');
     if(hud){ hud.textContent=tierLbl+'·'+fps+'fps'; hud.style.color=fpsCol; }
-
-    /* Bouton dans le menu */
     var tb=document.getElementById('perf-tog-btn');
     if(!tb) return;
     if(S.enabled){
@@ -437,12 +338,7 @@ var PERF = (function(){
     }
   }
 
-  var _GC={
-    _m:{},
-    get:function(k){ return this._m[k]||null; },
-    set:function(k,v){ this._m[k]=v; return v; },
-    clear:function(){ this._m={}; }
-  };
+  var _GC={ _m:{}, get:function(k){ return this._m[k]||null; }, set:function(k,v){ this._m[k]=v; return v; }, clear:function(){ this._m={}; } };
 
   function _init(){
     try{ S.enabled=localStorage.getItem('dz_pref_perf')!=='off'; }catch(e){}
@@ -471,16 +367,11 @@ var PERF = (function(){
     isMid    :function(){ return S.enabled&&S.tier==='mid'; },
     isHigh   :function(){ return !S.enabled||S.tier==='high'; },
     gradCache:_GC,
-
-    /* shouldRender : sur LOW on limite le rendu canvas à ~35fps.
-       La logique tourne toujours à 60fps — seul le dessin est ralenti. */
     shouldRender:function(ts){
       if(!S.enabled||S.tier!=='low') return true;
       if(ts-S._renderLast<CFG.renderMinMs) return false;
       S._renderLast=ts; return true;
     },
-
-    /* Shadow helpers : sur LOW jamais de shadowBlur */
     setShadow:function(col,blur){
       if(!S.enabled){ ctx.shadowColor=col; ctx.shadowBlur=blur; return; }
       if(S.tier==='low') return;
@@ -490,10 +381,8 @@ var PERF = (function(){
     clearShadow:function(){
       if(!S.enabled||S.tier!=='low'){ ctx.shadowBlur=0; ctx.shadowColor='transparent'; }
     },
-
     mp:function(n){ if(!S.enabled) return n; return S.tier==='high'?n:S.tier==='mid'?Math.ceil(n*.6):Math.max(1,Math.ceil(n*.15)); },
     ns:function(){ return S.enabled?CFG.stars[S.tier]:CFG.stars.high; },
-
     init:_init,
   };
 
@@ -754,7 +643,7 @@ function togglePause(){ if(!document.getElementById('game-scr').classList.contai
 
 document.getElementById('play-btn').addEventListener('click',initGame);
 document.getElementById('retry-btn').addEventListener('click',initGame);
-document.getElementById('home-btn').addEventListener('click',function(){ if(RAF) cancelAnimationFrame(RAF); RAF=null; window.location.href='https://cocopiete50-sys.github.io/Fl-chettes_game/'; });
+document.getElementById('home-btn').addEventListener('click',function(){ if(RAF) cancelAnimationFrame(RAF); RAF=null; show('start-scr'); });
 document.getElementById('pause-ic').addEventListener('click',togglePause);
 document.getElementById('resume-btn').addEventListener('click',togglePause);
 document.getElementById('quit-btn').addEventListener('click',function(){ paused=false; if(RAF) cancelAnimationFrame(RAF); RAF=null; document.getElementById('pause-scr').classList.remove('on'); show('start-scr'); });
@@ -777,7 +666,7 @@ document.querySelectorAll('.play-btn,.go-retry,.go-home,.p-btn,.db,.perf-tog-btn
 document.getElementById('s-best-v').textContent=getBest();
 
 /* Anti-cache */
-(function(){ var k='_pr_cv',v='5'; if(sessionStorage.getItem(k)!==v){ sessionStorage.removeItem('_pr_tracked'); sessionStorage.setItem(k,v); } })();
+(function(){ var k='_pr_cv',v='6'; if(sessionStorage.getItem(k)!==v){ sessionStorage.removeItem('_pr_tracked'); sessionStorage.setItem(k,v); } })();
 
 /* ══ DISCORD ══ */
 (function(){
