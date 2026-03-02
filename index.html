@@ -75,28 +75,38 @@ html,body{width:100%;height:100%;overflow:hidden;background:#060610;font-family:
 .ft{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;pointer-events:none;z-index:20;animation:fta .75s ease-out forwards;transform:translateX(-50%);}
 @keyframes fta{0%{opacity:1;transform:translateX(-50%) translateY(0);}100%{opacity:0;transform:translateX(-50%) translateY(-52px);}}
 
-/* ══ PERF CLASSES CSS ══ */
-body.perf-low .gl,body.perf-mid .gl{
-backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
-background:rgba(10,10,22,.93)!important;
-box-shadow:0 20px 60px rgba(0,0,0,.8)!important;
+/* ── FPS HUD discret — coin bas-droit, toutes interfaces ── */
+#fps-hud{
+position:fixed;bottom:8px;right:10px;z-index:9997;
+font-size:.46rem;font-family:‘Rajdhani’,monospace;font-weight:700;
+letter-spacing:.07em;color:rgba(255,255,255,.28);
+pointer-events:none;padding:2px 6px;border-radius:6px;
+background:rgba(0,0,0,.2);line-height:1.4;
+transition:color .6s;
 }
+
+/* ══ PERF CLASSES CSS ══ */
+body.perf-low .gl,body.perf-mid .gl{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(10,10,22,.93)!important;box-shadow:0 20px 60px rgba(0,0,0,.8)!important;}
 body.perf-low *{transition-duration:.08s!important;}
 body.perf-low .play-btn,body.perf-low .go-retry{box-shadow:0 5px 14px rgba(232,25,44,.25)!important;}
 body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
 
-/* ── Toggle ── */
+/* ── Toggle dans le menu ── */
 .perf-tog{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:18px;margin-bottom:16px;gap:10px;}
 .perf-tog-info{display:flex;flex-direction:column;gap:2px;flex:1;}
 .perf-tog-title{font-family:‘Bebas Neue’,sans-serif;font-size:.82rem;letter-spacing:.1em;color:#f0f0f8;}
 .perf-tog-sub{font-size:.38rem;letter-spacing:.1em;color:#7070a0;}
 .perf-tog-btn{padding:8px 12px;border:none;border-radius:12px;font-family:‘Bebas Neue’,sans-serif;font-size:.6rem;letter-spacing:.06em;cursor:pointer;min-width:96px;text-align:center;position:relative;overflow:hidden;flex-shrink:0;transition:background .3s,border-color .3s,color .3s;}
-.perf-tog-btn.is-on {background:rgba(45,198,83,.16);border:1.5px solid rgba(45,198,83,.4);color:#2dc653;}
+.perf-tog-btn.is-on{background:rgba(45,198,83,.16);border:1.5px solid rgba(45,198,83,.4);color:#2dc653;}
 .perf-tog-btn.is-off{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);color:#7070a0;}
 </style>
 
 </head>
 <body>
+
+<!-- FPS HUD discret — visible sur toutes les interfaces -->
+
+<div id="fps-hud">H·—fps</div>
 <div id="toast"></div>
 
 <!-- ══ START ══ -->
@@ -119,10 +129,11 @@ body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
       <div class="db" data-d="1">NORMAL</div>
       <div class="db" data-d="2">HARD</div>
     </div>
+    <!-- ══ TOGGLE PERFORMANCE ══ -->
     <div class="perf-tog">
       <div class="perf-tog-info">
-        <span class="perf-tog-title">⚡ MODE PERFORMANCE</span>
-        <span class="perf-tog-sub">Optimisation automatique selon ton appareil</span>
+        <span class="perf-tog-title">⚡ OPTIMISATION AUTO</span>
+        <span class="perf-tog-sub" id="perf-tog-sub">Analyse matériel en cours…</span>
       </div>
       <button class="perf-tog-btn is-on" id="perf-tog-btn">⚡ … fps</button>
     </div>
@@ -190,212 +201,305 @@ body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
 <script>
 'use strict';
 
-/* ═══════════════════════════════════════════════════
-   PERF ENGINE v4
+/* ══════════════════════════════════════════════════════════════════
+   PERF ENGINE v5 — PIXEL RUN
 
-   Corrections vs v3 :
-   1. RAF FPS indépendant — tourne TOUJOURS, menu ou jeu
-   2. Benchmark GPU plus réaliste (shadowBlur inclus)
-   3. Force LOW si GPU benchmark > 40ms (au lieu de 60ms)
-   4. shouldRender() utilise timestamp réel, pas frame counter
-   5. Cache gradients sans clé "x/y" — évite les misses constants
-═══════════════════════════════════════════════════ */
+   PRINCIPE FONDAMENTAL :
+   ─────────────────────
+   Le HARDWARE détermine le PLAFOND du tier. Les FPS ne peuvent
+   QUE descendre sous ce plafond, jamais remonter au-dessus de ce
+   que le matériel peut réellement supporter.
+
+   TIERS :
+   · HIGH  → téléphone récent, GPU/RAM/CPU performants
+   · MID   → appareil moyen, optimisations partielles
+   · LOW   → vieux appareil, toutes optimisations actives
+
+   ANTI-OSCILLATION :
+   · EMA lente (α=0.88) : lisse les pics FPS avant toute décision
+   · Seuils asymétriques : descendre est facile, monter est très dur
+   · Cooldown down = 4s  |  cooldown up = 30s
+   · Confirmations : 3 mesures pour descendre, 10 pour monter
+   · Zone tampon (hysteresis) entre seuils down/up
+
+   RÈGLES ABSOLUES pour toute future IA :
+   ───────────────────────────────────────
+   1. NE PAS baser la montée de tier uniquement sur les FPS
+      → Un vieux tel qui monte à 55fps en LOW doit rester LOW
+        si son score hardware est LOW
+   2. hwTier est calculé UNE FOIS au benchmark, c'est le PLAFOND
+   3. Les FPS ne déclenchent qu'une descente en dessous du plafond
+   4. La montée nécessite : score HW suffisant + FPS stables longtemps
+   5. NE PAS réduire les cooldowns côté "up" — c'est ce qui cause
+      l'oscillation classique
+   6. EMA doit être lente (≥ 0.80) pour ne pas sur-réagir
+══════════════════════════════════════════════════════════════════ */
 var PERF = (function(){
 
   var CFG = {
-    /* GPU : on inclut shadowBlur dans le bench — c'est lui le vrai coupable */
-    gpuIter: 60, gpuFastMs: 18, gpuSlowMs: 50,
-    /* Seuils tier — abaissés pour être plus agressif */
-    tierHighMin: 60, tierMidMin: 30,
-    /* Poids */
-    wGpu:.55, wRam:.25, wCpu:.20, wHw:.65, wFps:.35,
-    /* Cadence BG (ms minimum entre 2 rendus sur LOW) */
-    renderMinMs: { high:0, mid:0, low:20 },
-    /* Multiplicateurs */
+    gpuIter:50, gpuFastMs:16, gpuSlowMs:48,
+
+    /* Seuils hardware (score 0-100) — définissent le PLAFOND */
+    hwHighMin:62,
+    hwMidMin :28,
+
+    /* Seuils FPS pour DESCENDRE (réactif) */
+    fpsDnHigh:34,   /* HIGH→MID si FPS < 34 confirmé */
+    fpsDnMid :20,   /* MID →LOW si FPS < 20 confirmé */
+
+    /* Seuils FPS pour MONTER (très conservateur)
+       Doit être BIEN au-dessus du seuil de descente correspondant */
+    fpsUpMid :56,   /* LOW→MID  nécessite FPS > 56 longtemps */
+    fpsUpHigh:68,   /* MID→HIGH nécessite FPS > 68 longtemps */
+
+    /* Cooldowns asymétriques (ms) */
+    coolDown:4000,  /* min 4s  entre deux descentes */
+    coolUp  :30000, /* min 30s entre deux montées   */
+
+    /* Confirmations consécutives avant changement */
+    confirmDn:3,    /* 3 mesures basses  → descend (~2.4s) */
+    confirmUp:10,   /* 10 mesures hautes → monte  (~8s)    */
+
+    fpsEMA:0.88,    /* EMA FPS — plus élevé = plus stable/lent */
+
+    renderMinMs:28, /* ~35fps max rendu sur LOW */
     partMul:  { high:1.0, mid:0.6,  low:0.15 },
     stars:    { high:80,  mid:48,   low:16   },
   };
 
   var S = {
-    tier:'high', enabled:true,
-    /* FPS — calculé en continu par le RAF indépendant */
-    fpsSmooth:60, _fpsFrames:0, _fpsLast:0,
-    gpuScore:50, ramScore:50, cpuScore:50,
-    total:50, lowBat:false,
-    _evalCount:0,
+    tier     :'high',
+    enabled  :true,
+    fpsSmooth:60,
+    _fpsFrames:0, _fpsLast:0,
+    gpuScore :50, ramScore:50, cpuScore:50,
+    hwTier   :'high',  /* plafond hardware — fixé après benchmark */
+    hwScore  :50,
+    lowBat   :false,
+    _dnStreak:0,       /* mesures consécutives en dessous seuil */
+    _upStreak:0,       /* mesures consécutives au-dessus seuil  */
+    _lastChange:0,     /* timestamp du dernier changement */
+    _benchDone:false,
     _renderLast:0,
   };
 
-  /* ── RAF FPS indépendant — tourne en permanence, menu ou jeu ──
-     On compte les frames dans une boucle dédiée.
-     Update toutes les 800ms pour être réactif.             */
-  var _fpsRAF;
+  var ORD = {high:2, mid:1, low:0};
+
+  /* ════ RAF FPS — tourne en permanence, menu ou jeu ════ */
   function _fpsLoop(ts){
-    _fpsRAF = requestAnimationFrame(_fpsLoop);
+    requestAnimationFrame(_fpsLoop);
     S._fpsFrames++;
-    if(!S._fpsLast){ S._fpsLast = ts; return; }
-    var elapsed = ts - S._fpsLast;
-    if(elapsed >= 800){
-      var raw = S._fpsFrames * 1000 / elapsed;
-      /* Lissage exponentiel léger */
-      S.fpsSmooth = S.fpsSmooth * 0.6 + raw * 0.4;
-      S._fpsFrames = 0; S._fpsLast = ts;
-      S._evalCount++;
-      /* Réévalue le tier toutes les 5 mesures (~4s) */
-      if(S._evalCount % 5 === 0) _recalc();
-      _updateBtn();
-    }
+    if(!S._fpsLast){ S._fpsLast=ts; return; }
+    var elapsed=ts-S._fpsLast;
+    if(elapsed<700) return;
+    var raw=S._fpsFrames*(1000/elapsed);
+    /* EMA lente — amortit les pics ponctuels */
+    S.fpsSmooth=S.fpsSmooth*CFG.fpsEMA + raw*(1-CFG.fpsEMA);
+    S._fpsFrames=0;
+    S._fpsLast=ts;
+    if(S._benchDone) _recalc();
+    _updateHUD();
   }
 
-  /* ── Benchmark GPU réaliste : inclut shadowBlur + arc ── */
+  /* ════ Benchmark GPU ════ */
   function _benchGPU(){
     try{
-      var c = document.createElement('canvas'); c.width = c.height = 160;
-      var cx = c.getContext('2d'), t0 = performance.now();
-      for(var i=0; i<CFG.gpuIter; i++){
-        cx.shadowBlur = 18; cx.shadowColor = 'rgba(200,0,255,.8)';
-        cx.fillStyle = '#8833dd';
-        cx.beginPath(); cx.arc(80,80,50,0,Math.PI*2); cx.fill();
-        cx.shadowBlur = 0;
-        var g = cx.createLinearGradient(0,0,160,160);
-        g.addColorStop(0,'#ff0055'); g.addColorStop(1,'#0055ff');
-        cx.fillStyle = g; cx.fillRect(10,10,140,140);
+      var c=document.createElement('canvas'); c.width=c.height=128;
+      var cx=c.getContext('2d'), t0=performance.now();
+      for(var i=0;i<CFG.gpuIter;i++){
+        cx.shadowBlur=14; cx.shadowColor='rgba(180,0,220,.8)';
+        cx.fillStyle='#7722cc';
+        cx.beginPath(); cx.arc(64,64,40,0,Math.PI*2); cx.fill();
+        cx.shadowBlur=0;
+        var g=cx.createLinearGradient(0,0,128,128);
+        g.addColorStop(0,'#ff0044'); g.addColorStop(1,'#0044ff');
+        cx.fillStyle=g; cx.fillRect(0,0,128,128);
       }
-      var ms = performance.now() - t0;
-      /* Score : 100 si ≤18ms, 0 si ≥50ms */
-      S.gpuScore = Math.max(0, Math.min(100, 100 - (ms - CFG.gpuFastMs) * (100/(CFG.gpuSlowMs - CFG.gpuFastMs))));
-    }catch(e){ S.gpuScore = 40; }
+      var ms=performance.now()-t0;
+      S.gpuScore=Math.max(0,Math.min(100,
+        100-(ms-CFG.gpuFastMs)*(100/(CFG.gpuSlowMs-CFG.gpuFastMs))
+      ));
+    }catch(e){ S.gpuScore=35; }
   }
 
   function _scoreRAM(){
-    try{
-      var r = navigator.deviceMemory;
-      S.ramScore = !r ? 50 : r>=8?100 : r>=4?70 : r>=2?40 : 15;
-    }catch(e){ S.ramScore = 50; }
+    try{ var r=navigator.deviceMemory; S.ramScore=!r?50:r>=8?100:r>=4?72:r>=2?42:15; }
+    catch(e){ S.ramScore=50; }
   }
   function _scoreCPU(){
-    try{
-      var n = navigator.hardwareConcurrency;
-      S.cpuScore = !n ? 30 : n>=8?100 : n>=6?80 : n>=4?60 : n>=2?35 : 10;
-    }catch(e){ S.cpuScore = 30; }
+    try{ var n=navigator.hardwareConcurrency; S.cpuScore=!n?30:n>=8?100:n>=6?80:n>=4?58:n>=2?32:10; }
+    catch(e){ S.cpuScore=30; }
   }
+
+  /* ════ Calcul hwTier (PLAFOND) — appelé UNE SEULE FOIS ════ */
+  function _computeHWTier(){
+    S.hwScore=S.gpuScore*0.55+S.ramScore*0.25+S.cpuScore*0.20;
+    if(S.lowBat) S.hwScore-=15;
+    S.hwScore=Math.max(0,Math.min(100,S.hwScore));
+    S.hwTier=S.hwScore>=CFG.hwHighMin?'high':S.hwScore>=CFG.hwMidMin?'mid':'low';
+    if(ORD[S.tier]>ORD[S.hwTier]) S.tier=S.hwTier;
+    /* Description dans le toggle */
+    var sub=document.getElementById('perf-tog-sub');
+    if(sub){
+      var desc=S.hwTier==='high'?'Appareil performant — effets complets':
+               S.hwTier==='mid' ?'Appareil moyen — effets réduits':
+                                  'Appareil ancien — mode économie';
+      sub.textContent='HW '+Math.round(S.hwScore)+'/100 — '+desc;
+    }
+    S._benchDone=true;
+    _applyTier();
+  }
+
   function _monitorBattery(){
     try{
       if(!navigator.getBattery) return;
       navigator.getBattery().then(function(b){
-        function upd(){ S.lowBat = b.level < .20 && !b.charging; _recalc(); }
-        b.addEventListener('levelchange', upd);
-        b.addEventListener('chargingchange', upd);
-        upd();
+        function upd(){
+          var was=S.lowBat;
+          S.lowBat=b.level<0.20&&!b.charging;
+          if(was!==S.lowBat) _computeHWTier();
+        }
+        b.addEventListener('levelchange',upd); b.addEventListener('chargingchange',upd); upd();
       }).catch(function(){});
     }catch(e){}
   }
 
+  /* ════ Décision de tier — hardware est le PLAFOND ════
+     Un vieux tel qui remonte à 60fps en LOW ne monte PAS
+     si son hwTier est LOW — son matériel ne peut pas gérer. */
   function _recalc(){
-    var hw = S.gpuScore*CFG.wGpu + S.ramScore*CFG.wRam + S.cpuScore*CFG.wCpu;
-    var fps = Math.max(0, Math.min(100, (S.fpsSmooth - 20) * 2.5));
-    S.total = hw*CFG.wHw + fps*CFG.wFps;
-    if(S.lowBat) S.total -= 20;
-    var nt = S.total >= CFG.tierHighMin ? 'high' : S.total >= CFG.tierMidMin ? 'mid' : 'low';
-    if(nt !== S.tier){ S.tier = nt; _applyTier(); }
+    if(!S.enabled) return;
+    var now=performance.now(), fps=S.fpsSmooth;
+
+    var wantDn=false, wantUp=false;
+    if(S.tier==='high'&&fps<CFG.fpsDnHigh) wantDn=true;
+    if(S.tier==='mid' &&fps<CFG.fpsDnMid ) wantDn=true;
+    /* Montée seulement si le hardware le supporte ET FPS très stable */
+    if(S.tier==='low'&&fps>CFG.fpsUpMid &&ORD[S.hwTier]>=1) wantUp=true;
+    if(S.tier==='mid'&&fps>CFG.fpsUpHigh&&S.hwTier==='high') wantUp=true;
+
+    if(wantDn){ S._dnStreak++; S._upStreak=0; }
+    else if(wantUp){ S._upStreak++; S._dnStreak=0; }
+    else{ S._dnStreak=0; S._upStreak=0; }
+
+    var nt=S.tier, dt=now-S._lastChange;
+
+    /* ── Descente : rapide ── */
+    if(S._dnStreak>=CFG.confirmDn&&dt>CFG.coolDown){
+      if(S.tier==='high') nt='mid';
+      else if(S.tier==='mid') nt='low';
+      S._dnStreak=0; S._upStreak=0;
+    }
+    /* ── Montée : très lente ── */
+    else if(S._upStreak>=CFG.confirmUp&&dt>CFG.coolUp){
+      if(S.tier==='low'&&ORD[S.hwTier]>=1) nt='mid';
+      else if(S.tier==='mid'&&S.hwTier==='high') nt='high';
+      S._dnStreak=0; S._upStreak=0;
+    }
+
+    /* PLAFOND ABSOLU : jamais au-dessus du hardware */
+    if(ORD[nt]>ORD[S.hwTier]) nt=S.hwTier;
+
+    if(nt!==S.tier){ S.tier=nt; S._lastChange=now; _applyTier(); }
   }
 
   function _applyTier(){
     document.body.classList.remove('perf-low','perf-mid','perf-high');
-    document.body.classList.add('perf-' + (S.enabled ? S.tier : 'high'));
+    document.body.classList.add('perf-'+(S.enabled?S.tier:'high'));
     _GC.clear();
   }
 
-  /* ── Mise à jour bouton toggle avec FPS live et couleur ── */
-  function _updateBtn(){
-    var tb = document.getElementById('perf-tog-btn');
+  /* ════ HUD FPS discret + bouton settings ════ */
+  function _updateHUD(){
+    var fps=Math.round(S.fpsSmooth);
+    var tierLbl=S.tier==='high'?'H':S.tier==='mid'?'M':'L';
+    var fpsCol=fps>=55?'rgba(45,198,83,.55)':fps>=35?'rgba(245,197,24,.55)':'rgba(232,25,44,.55)';
+
+    /* FPS HUD discret — toujours visible */
+    var hud=document.getElementById('fps-hud');
+    if(hud){ hud.textContent=tierLbl+'·'+fps+'fps'; hud.style.color=fpsCol; }
+
+    /* Bouton dans le menu */
+    var tb=document.getElementById('perf-tog-btn');
     if(!tb) return;
-    var fps = Math.round(S.fpsSmooth);
-    var fpsCol = fps>=55 ? '#2dc653' : fps>=38 ? '#f5c518' : '#e8192c';
-    var fpsBg  = fps>=55 ? 'rgba(45,198,83,.16)' : fps>=38 ? 'rgba(245,148,0,.16)' : 'rgba(232,25,44,.16)';
-    var fpsBorder = fps>=55 ? 'rgba(45,198,83,.4)' : fps>=38 ? 'rgba(245,148,0,.4)' : 'rgba(232,25,44,.4)';
     if(S.enabled){
-      var tierLabel = S.tier === 'high' ? 'HIGH' : S.tier === 'mid' ? 'MID' : 'LOW';
-      tb.textContent = '⚡ '+tierLabel+' • '+fps+' fps';
-      tb.style.background = fpsBg;
-      tb.style.borderColor = fpsBorder;
-      tb.style.color = fpsCol;
+      var fpsColBtn=fps>=55?'#2dc653':fps>=35?'#f5c518':'#e8192c';
+      var fpsBg=fps>=55?'rgba(45,198,83,.16)':fps>=35?'rgba(245,148,0,.16)':'rgba(232,25,44,.16)';
+      var fpsBorder=fps>=55?'rgba(45,198,83,.4)':fps>=35?'rgba(245,148,0,.4)':'rgba(232,25,44,.4)';
+      var tl=S.tier==='high'?'HIGH':S.tier==='mid'?'MID':'LOW';
+      tb.textContent='⚡ '+tl+' · '+fps+'fps';
+      tb.style.background=fpsBg; tb.style.borderColor=fpsBorder; tb.style.color=fpsColBtn;
+      tb.className='perf-tog-btn is-on';
     } else {
-      tb.textContent = '✕ DÉSACT • '+fps+' fps';
-      tb.style.background = 'rgba(255,255,255,.06)';
-      tb.style.borderColor = 'rgba(255,255,255,.1)';
-      tb.style.color = '#7070a0';
+      tb.textContent='✕ DÉSACT · '+fps+'fps';
+      tb.style.background='rgba(255,255,255,.06)'; tb.style.borderColor='rgba(255,255,255,.1)'; tb.style.color='#7070a0';
+      tb.className='perf-tog-btn is-off';
     }
   }
 
-  /* ── Cache de gradients ── */
-  var _GC = {
-    _m: {},
-    get: function(k){ return this._m[k]||null; },
-    set: function(k,v){ this._m[k]=v; return v; },
-    clear: function(){ this._m={}; },
+  var _GC={
+    _m:{},
+    get:function(k){ return this._m[k]||null; },
+    set:function(k,v){ this._m[k]=v; return v; },
+    clear:function(){ this._m={}; }
   };
 
   function _init(){
-    try{ S.enabled = localStorage.getItem('dz_pref_perf') !== 'off'; }catch(e){}
+    try{ S.enabled=localStorage.getItem('dz_pref_perf')!=='off'; }catch(e){}
     _benchGPU(); _scoreRAM(); _scoreCPU(); _monitorBattery();
-    _recalc(); _applyTier();
-
-    /* Lance le RAF FPS indépendant immédiatement */
-    _fpsRAF = requestAnimationFrame(_fpsLoop);
-
-    var tb = document.getElementById('perf-tog-btn');
-    if(tb){
-      tb.className = 'perf-tog-btn ' + (S.enabled ? 'is-on' : 'is-off');
-      tb.addEventListener('click', function(){
-        S.enabled = !S.enabled;
-        try{ localStorage.setItem('dz_pref_perf', S.enabled?'on':'off'); }catch(e){}
-        tb.className = 'perf-tog-btn ' + (S.enabled ? 'is-on' : 'is-off');
-        _applyTier();
-        _updateBtn();
+    _computeHWTier();
+    requestAnimationFrame(_fpsLoop);
+    setTimeout(function(){
+      var tb=document.getElementById('perf-tog-btn');
+      if(!tb) return;
+      tb.addEventListener('click',function(){
+        S.enabled=!S.enabled;
+        try{ localStorage.setItem('dz_pref_perf',S.enabled?'on':'off'); }catch(e){}
+        _applyTier(); _updateHUD();
+        S._dnStreak=0; S._upStreak=0;
+        S._lastChange=performance.now();
       });
-    }
+      _updateHUD();
+    },100);
   }
 
-  /* API publique */
-  var api = {
-    getTier:  function(){ return S.tier; },
-    getFPS:   function(){ return Math.round(S.fpsSmooth); },
-    isLow:    function(){ return S.enabled && S.tier==='low'; },
-    isMid:    function(){ return S.enabled && S.tier==='mid'; },
-    isHigh:   function(){ return !S.enabled || S.tier==='high'; },
-    gradCache: _GC,
+  var api={
+    getTier  :function(){ return S.tier; },
+    getFPS   :function(){ return Math.round(S.fpsSmooth); },
+    getHWTier:function(){ return S.hwTier; },
+    isLow    :function(){ return S.enabled&&S.tier==='low'; },
+    isMid    :function(){ return S.enabled&&S.tier==='mid'; },
+    isHigh   :function(){ return !S.enabled||S.tier==='high'; },
+    gradCache:_GC,
 
-    /* shouldRender : sur LOW on cible ~30fps rendu en limitant par timestamp.
-       La logique tourne toujours à 60fps, seul le dessin canvas est ralenti. */
-    shouldRender: function(ts){
-      if(!S.enabled || S.tier !== 'low') return true;
-      if(ts - S._renderLast < 28) return false; /* ~35fps max sur LOW */
-      S._renderLast = ts;
-      return true;
+    /* shouldRender : sur LOW on limite le rendu canvas à ~35fps.
+       La logique tourne toujours à 60fps — seul le dessin est ralenti. */
+    shouldRender:function(ts){
+      if(!S.enabled||S.tier!=='low') return true;
+      if(ts-S._renderLast<CFG.renderMinMs) return false;
+      S._renderLast=ts; return true;
     },
 
-    /* Shadow helpers : sur LOW on ne pose JAMAIS shadowBlur > 0 */
-    setShadow: function(col, blur){
+    /* Shadow helpers : sur LOW jamais de shadowBlur */
+    setShadow:function(col,blur){
       if(!S.enabled){ ctx.shadowColor=col; ctx.shadowBlur=blur; return; }
-      if(S.tier==='low'){ return; } /* skip total */
-      ctx.shadowColor = col;
-      ctx.shadowBlur  = S.tier==='mid' ? Math.ceil(blur*.35) : blur;
+      if(S.tier==='low') return;
+      ctx.shadowColor=col;
+      ctx.shadowBlur=S.tier==='mid'?Math.ceil(blur*.35):blur;
     },
-    clearShadow: function(){
-      if(!S.enabled || S.tier!=='low'){ ctx.shadowBlur=0; ctx.shadowColor='transparent'; }
+    clearShadow:function(){
+      if(!S.enabled||S.tier!=='low'){ ctx.shadowBlur=0; ctx.shadowColor='transparent'; }
     },
 
-    mp: function(n){ if(!S.enabled) return n; return S.tier==='high'?n : S.tier==='mid'?Math.ceil(n*.6):Math.max(1,Math.ceil(n*.15)); },
-    ns: function(){ return S.enabled ? CFG.stars[S.tier] : CFG.stars.high; },
+    mp:function(n){ if(!S.enabled) return n; return S.tier==='high'?n:S.tier==='mid'?Math.ceil(n*.6):Math.max(1,Math.ceil(n*.15)); },
+    ns:function(){ return S.enabled?CFG.stars[S.tier]:CFG.stars.high; },
 
-    init: _init,
+    init:_init,
   };
 
-  /* lvl getter pour les if(PERF.lvl>=X) dans drawBG */
   Object.defineProperty(api,'lvl',{
-    get: function(){ return !S.enabled?3 : S.tier==='high'?3 : S.tier==='mid'?2 : 1; },
-    enumerable: true
+    get:function(){ return !S.enabled?3:S.tier==='high'?3:S.tier==='mid'?2:1; },
+    enumerable:true
   });
 
   return api;
@@ -470,64 +574,32 @@ function rrect(c,x,y,w,h,r){
   c.lineTo(x+r,y+h); c.arcTo(x,y+h,x,y+h-r,r); c.lineTo(x,y+r); c.arcTo(x,y,x+r,y,r); c.closePath();
 }
 
-/* ══ DRAW PLAYER ══ */
 function drawPlayer(){
   if(!PLR) return;
   if(PLR.inv>0&&Math.floor(PLR.inv/4)%2===1) return;
   var sq=PLR.squash, sw=PW/sq, sh=PH*sq, ox=(PW-sw)/2, oy=PH-sh, px=PLR.x+ox, py=PLR.y+oy;
   var isLow=PERF.isLow();
-
-  if(PERF.lvl>=2){
-    PLR.trail.forEach(function(t){
-      if(t.a<=0) return;
-      ctx.save(); ctx.globalAlpha=t.a*.13; ctx.fillStyle='#a855f7';
-      ctx.beginPath(); ctx.arc(t.x,t.y,PW*.48*t.a,0,Math.PI*2); ctx.fill(); ctx.restore();
-    });
-  }
-
+  if(PERF.lvl>=2){ PLR.trail.forEach(function(t){ if(t.a<=0) return; ctx.save(); ctx.globalAlpha=t.a*.13; ctx.fillStyle='#a855f7'; ctx.beginPath(); ctx.arc(t.x,t.y,PW*.48*t.a,0,Math.PI*2); ctx.fill(); ctx.restore(); }); }
   ctx.save(); ctx.translate(px,py);
-
   if(isLow){
-    /* LOW : couleur plate, zéro shadow */
     ctx.fillStyle='#8833dd'; rrect(ctx,0,0,sw,sh,sw*.24); ctx.fill();
   } else {
-    var gk='plr_'+Math.round(sh);
-    var bg=PERF.gradCache.get(gk);
-    if(!bg){
-      bg=ctx.createLinearGradient(0,0,0,sh);
-      bg.addColorStop(0,'#d08aff'); bg.addColorStop(.5,'#8833dd'); bg.addColorStop(1,'#5511aa');
-      PERF.gradCache.set(gk,bg);
-    }
-    PERF.setShadow('#a855f7',22);
-    ctx.fillStyle=bg; rrect(ctx,0,0,sw,sh,sw*.24); ctx.fill();
-    PERF.clearShadow();
+    var gk='plr_'+Math.round(sh), bg=PERF.gradCache.get(gk);
+    if(!bg){ bg=ctx.createLinearGradient(0,0,0,sh); bg.addColorStop(0,'#d08aff'); bg.addColorStop(.5,'#8833dd'); bg.addColorStop(1,'#5511aa'); PERF.gradCache.set(gk,bg); }
+    PERF.setShadow('#a855f7',22); ctx.fillStyle=bg; rrect(ctx,0,0,sw,sh,sw*.24); ctx.fill(); PERF.clearShadow();
     ctx.fillStyle='rgba(255,255,255,0.12)'; rrect(ctx,sw*.08,sh*.06,sw*.84,sh*.35,sw*.18); ctx.fill();
     ctx.fillStyle='rgba(0,212,255,0.22)';   rrect(ctx,sw*.1, sh*.1, sw*.8, sh*.26,sw*.12); ctx.fill();
   }
-
   if(!isLow) PERF.setShadow('#00d4ff',14);
-  ctx.fillStyle='#00d4ff';
-  ctx.beginPath(); ctx.arc(sw*.29,sh*.2,sw*.11,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(sw*.71,sh*.2,sw*.11,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#00d4ff'; ctx.beginPath(); ctx.arc(sw*.29,sh*.2,sw*.11,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(sw*.71,sh*.2,sw*.11,0,Math.PI*2); ctx.fill();
   if(!isLow) PERF.clearShadow();
-
-  ctx.fillStyle='rgba(0,0,0,0.5)';
-  ctx.beginPath(); ctx.arc(sw*.31,sh*.21,sw*.05,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(sw*.73,sh*.21,sw*.05,0,Math.PI*2); ctx.fill();
-
+  ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.beginPath(); ctx.arc(sw*.31,sh*.21,sw*.05,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(sw*.73,sh*.21,sw*.05,0,Math.PI*2); ctx.fill();
   var legA=PLR.onGround?Math.sin(Date.now()*.016)*.28:0;
-  ctx.fillStyle='#4a10aa';
-  rrect(ctx,sw*.1,sh*.74,sw*.36,sh*.26+legA*sh*.08,4); ctx.fill();
-  rrect(ctx,sw*.54,sh*.74,sw*.36,sh*.26-legA*sh*.08,4); ctx.fill();
-  if(!isLow){
-    ctx.fillStyle='rgba(255,255,255,0.12)';
-    rrect(ctx,sw*.1,sh*.74,sw*.36,sh*.07,3); ctx.fill();
-    rrect(ctx,sw*.54,sh*.74,sw*.36,sh*.07,3); ctx.fill();
-  }
+  ctx.fillStyle='#4a10aa'; rrect(ctx,sw*.1,sh*.74,sw*.36,sh*.26+legA*sh*.08,4); ctx.fill(); rrect(ctx,sw*.54,sh*.74,sw*.36,sh*.26-legA*sh*.08,4); ctx.fill();
+  if(!isLow){ ctx.fillStyle='rgba(255,255,255,0.12)'; rrect(ctx,sw*.1,sh*.74,sw*.36,sh*.07,3); ctx.fill(); rrect(ctx,sw*.54,sh*.74,sw*.36,sh*.07,3); ctx.fill(); }
   ctx.restore();
 }
 
-/* ══ BACKGROUND ══ */
 var BG={stars:[],mnts:[],city:[],mx:0,cx:0,sx:0};
 function buildBG(){
   BG.stars=[]; for(var i=0;i<80;i++) BG.stars.push({x:Math.random()*W,y:Math.random()*(GROUND*.7),r:.4+Math.random()*1.5,o:.08+Math.random()*.5,sp:.15+Math.random()*.4});
@@ -538,64 +610,20 @@ function buildBG(){
 
 function drawBG(spd){
   var isLow=PERF.isLow();
-
-  /* Ciel */
-  if(isLow){
-    ctx.fillStyle='#07042a'; ctx.fillRect(0,0,W,GROUND);
-  } else {
-    var sk=PERF.gradCache.get('sky');
-    if(!sk){ sk=ctx.createLinearGradient(0,0,0,GROUND); sk.addColorStop(0,'#030310'); sk.addColorStop(.5,'#070420'); sk.addColorStop(1,'#0e0618'); PERF.gradCache.set('sky',sk); }
-    ctx.fillStyle=sk; ctx.fillRect(0,0,W,GROUND);
-  }
-
-  /* Étoiles */
+  if(isLow){ ctx.fillStyle='#07042a'; ctx.fillRect(0,0,W,GROUND); }
+  else { var sk=PERF.gradCache.get('sky'); if(!sk){ sk=ctx.createLinearGradient(0,0,0,GROUND); sk.addColorStop(0,'#030310'); sk.addColorStop(.5,'#070420'); sk.addColorStop(1,'#0e0618'); PERF.gradCache.set('sky',sk); } ctx.fillStyle=sk; ctx.fillRect(0,0,W,GROUND); }
   BG.sx-=spd*.025; var ns=PERF.ns();
   BG.stars.slice(0,ns).forEach(function(s){ var x=(s.x+BG.sx*s.sp+W*10)%W; ctx.fillStyle='rgba(255,255,255,'+s.o.toFixed(2)+')'; ctx.beginPath(); ctx.arc(x,s.y,s.r,0,Math.PI*2); ctx.fill(); });
-
-  /* Nébuleuse MID/HIGH */
   if(PERF.lvl>=2){ ctx.save(); var neb=ctx.createRadialGradient(W*.7,GROUND*.3,0,W*.7,GROUND*.3,W*.5); neb.addColorStop(0,'rgba(120,20,160,0.07)'); neb.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=neb; ctx.fillRect(0,0,W,GROUND); ctx.restore(); }
-
-  /* Montagnes */
   if(PERF.lvl>=1){ BG.mx-=spd*.22; if(BG.mx<-W) BG.mx+=W; for(var p=0;p<2;p++){ ctx.fillStyle='rgba(30,6,50,0.55)'; ctx.beginPath(); ctx.moveTo(BG.mx+p*W,GROUND); BG.mnts.forEach(function(m){ var mx=m.x+BG.mx+p*W; ctx.lineTo(mx+m.w*.5,GROUND-m.h); ctx.lineTo(mx+m.w,GROUND); }); ctx.closePath(); ctx.fill(); } }
-
-  /* Ville */
   BG.cx-=spd*.48; if(BG.cx<-W) BG.cx+=W;
-  for(var cp=0;cp<2;cp++){
-    BG.city.forEach(function(b){
-      var bx=b.x+BG.cx+cp*W; if(bx<-60||bx>W+60) return;
-      ctx.fillStyle='rgba(8,3,20,0.92)'; ctx.fillRect(bx,GROUND-b.h,b.w,b.h);
-      /* Fenêtres : seulement MID/HIGH — double boucle trop lourde sur LOW */
-      if(PERF.lvl>=2){ for(var wy=GROUND-b.h+5;wy<GROUND-6;wy+=9){ for(var wx=bx+3;wx<bx+b.w-3;wx+=7){ if(Math.sin(wx*13.7+wy*7.3)>.3){ ctx.fillStyle='rgba(255,220,80,0.12)'; ctx.fillRect(wx,wy,4,5); } } } }
-    });
-  }
-
-  /* Sol */
-  if(isLow){
-    ctx.fillStyle='#0e0618'; ctx.fillRect(0,GROUND,W,H-GROUND);
-  } else {
-    var gr=PERF.gradCache.get('gr');
-    if(!gr){ gr=ctx.createLinearGradient(0,GROUND,0,H); gr.addColorStop(0,'#160820'); gr.addColorStop(1,'#060610'); PERF.gradCache.set('gr',gr); }
-    ctx.fillStyle=gr; ctx.fillRect(0,GROUND,W,H-GROUND);
-  }
-
-  /* Ligne sol */
-  ctx.save();
-  PERF.setShadow('#e8192c',14);
-  ctx.strokeStyle='rgba(232,25,44,0.75)'; ctx.lineWidth=2.5;
-  ctx.beginPath(); ctx.moveTo(0,GROUND); ctx.lineTo(W,GROUND); ctx.stroke();
-  PERF.clearShadow(); ctx.restore();
-
-  /* Grille MID/HIGH */
-  if(PERF.lvl>=1){
-    if(!G.goff) G.goff=0; G.goff=(G.goff+spd*.75)%56;
-    ctx.strokeStyle='rgba(232,25,44,0.06)'; ctx.lineWidth=1;
-    for(var gx=-G.goff;gx<W+56;gx+=56){ ctx.beginPath(); ctx.moveTo(gx,GROUND); ctx.lineTo(W/2+(gx-W/2)*.1,H); ctx.stroke(); }
-    for(var gy=0;gy<=4;gy++){ ctx.globalAlpha=.35*(1-gy/4); ctx.beginPath(); ctx.moveTo(0,GROUND+(H-GROUND)*(gy/4)); ctx.lineTo(W,GROUND+(H-GROUND)*(gy/4)); ctx.stroke(); }
-    ctx.globalAlpha=1;
-  }
+  for(var cp=0;cp<2;cp++){ BG.city.forEach(function(b){ var bx=b.x+BG.cx+cp*W; if(bx<-60||bx>W+60) return; ctx.fillStyle='rgba(8,3,20,0.92)'; ctx.fillRect(bx,GROUND-b.h,b.w,b.h); if(PERF.lvl>=2){ for(var wy=GROUND-b.h+5;wy<GROUND-6;wy+=9){ for(var wx=bx+3;wx<bx+b.w-3;wx+=7){ if(Math.sin(wx*13.7+wy*7.3)>.3){ ctx.fillStyle='rgba(255,220,80,0.12)'; ctx.fillRect(wx,wy,4,5); } } } } }); }
+  if(isLow){ ctx.fillStyle='#0e0618'; ctx.fillRect(0,GROUND,W,H-GROUND); }
+  else { var gr=PERF.gradCache.get('gr'); if(!gr){ gr=ctx.createLinearGradient(0,GROUND,0,H); gr.addColorStop(0,'#160820'); gr.addColorStop(1,'#060610'); PERF.gradCache.set('gr',gr); } ctx.fillStyle=gr; ctx.fillRect(0,GROUND,W,H-GROUND); }
+  ctx.save(); PERF.setShadow('#e8192c',14); ctx.strokeStyle='rgba(232,25,44,0.75)'; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(0,GROUND); ctx.lineTo(W,GROUND); ctx.stroke(); PERF.clearShadow(); ctx.restore();
+  if(PERF.lvl>=1){ if(!G.goff) G.goff=0; G.goff=(G.goff+spd*.75)%56; ctx.strokeStyle='rgba(232,25,44,0.06)'; ctx.lineWidth=1; for(var gx=-G.goff;gx<W+56;gx+=56){ ctx.beginPath(); ctx.moveTo(gx,GROUND); ctx.lineTo(W/2+(gx-W/2)*.1,H); ctx.stroke(); } for(var gy=0;gy<=4;gy++){ ctx.globalAlpha=.35*(1-gy/4); ctx.beginPath(); ctx.moveTo(0,GROUND+(H-GROUND)*(gy/4)); ctx.lineTo(W,GROUND+(H-GROUND)*(gy/4)); ctx.stroke(); } ctx.globalAlpha=1; }
 }
 
-/* ══ OBSTACLES ══ */
 var OBS_TYPES=[
   function(s){return{w:Math.round(W*.068),h:Math.round(s*(.55+Math.random()*.35)),c:'#bb0018',c2:'#ff4455',style:'box'};},
   function(s){return{w:Math.round(W*.045),h:Math.round(s*(.7 +Math.random()*.28)),c:'#770099',c2:'#cc44ff',style:'box'};},
@@ -604,12 +632,7 @@ var OBS_TYPES=[
   function(s){return{w:Math.round(W*.09 ),h:Math.round(s*(.5 +Math.random()*.3 )),c:'#884400',c2:'#ffaa00',style:'multi'};},
 ];
 OBST=[]; var obstT=0,obstNext=80;
-function spawnObs(){
-  var d=DIFF[diffIdx],safe=safeObsH(),fn=OBS_TYPES[Math.floor(Math.random()*OBS_TYPES.length)],t=fn(safe);
-  OBST.push({x:W+10,y:GROUND-t.h,w:t.w,h:t.h,c:t.c,c2:t.c2,style:t.style,pulse:0});
-  if(G.dist>30&&Math.random()<.22){var fn2=OBS_TYPES[Math.floor(Math.random()*OBS_TYPES.length)],t2=fn2(safe),gap=Math.round(W*(.22+Math.random()*.12)); OBST.push({x:W+10+t.w+gap,y:GROUND-t2.h,w:t2.w,h:t2.h,c:t2.c,c2:t2.c2,style:t2.style,pulse:0}); }
-  obstNext=d.spawnLo+Math.random()*(d.spawnHi-d.spawnLo); obstT=0;
-}
+function spawnObs(){ var d=DIFF[diffIdx],safe=safeObsH(),fn=OBS_TYPES[Math.floor(Math.random()*OBS_TYPES.length)],t=fn(safe); OBST.push({x:W+10,y:GROUND-t.h,w:t.w,h:t.h,c:t.c,c2:t.c2,style:t.style,pulse:0}); if(G.dist>30&&Math.random()<.22){var fn2=OBS_TYPES[Math.floor(Math.random()*OBS_TYPES.length)],t2=fn2(safe),gap=Math.round(W*(.22+Math.random()*.12)); OBST.push({x:W+10+t.w+gap,y:GROUND-t2.h,w:t2.w,h:t2.h,c:t2.c,c2:t2.c2,style:t2.style,pulse:0});} obstNext=d.spawnLo+Math.random()*(d.spawnHi-d.spawnLo); obstT=0; }
 function updateObs(spd){ obstT++; if(obstT>=obstNext) spawnObs(); for(var i=OBST.length-1;i>=0;i--){ OBST[i].x-=spd; OBST[i].pulse=(OBST[i].pulse||0)+.07; if(OBST[i].x<-OBST[i].w-5) OBST.splice(i,1); } }
 function drawObs(){
   var isLow=PERF.isLow();
@@ -620,35 +643,28 @@ function drawObs(){
     if(isSpike){
       var nc=o.style==='multi'?3:1, sw=o.w/(nc+(nc>1?.5:0));
       for(var si=0;si<nc;si++){
-        var sx=o.x+si*(sw*1.18);
-        var g=null;
+        var sx=o.x+si*(sw*1.18), g=null;
         if(!isLow){ var gk='sp_'+o.c+'_'+Math.round(o.h); g=PERF.gradCache.get(gk); if(!g){ g=ctx.createLinearGradient(0,0,0,o.h); g.addColorStop(0,o.c2); g.addColorStop(1,o.c); PERF.gradCache.set(gk,g); } }
-        ctx.fillStyle=isLow?o.c:g;
-        ctx.beginPath(); ctx.moveTo(sx+sw/2,o.y); ctx.lineTo(sx+sw,o.y+o.h); ctx.lineTo(sx,o.y+o.h); ctx.closePath(); ctx.fill();
+        ctx.fillStyle=isLow?o.c:g; ctx.beginPath(); ctx.moveTo(sx+sw/2,o.y); ctx.lineTo(sx+sw,o.y+o.h); ctx.lineTo(sx,o.y+o.h); ctx.closePath(); ctx.fill();
         if(!isLow){ ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(sx+sw/2,o.y); ctx.lineTo(sx+sw,o.y+o.h); ctx.stroke(); }
       }
     } else {
       var g2=null;
       if(!isLow){ var gk2='bx_'+o.c+'_'+Math.round(o.w)+'_'+Math.round(o.h); g2=PERF.gradCache.get(gk2); if(!g2){ g2=ctx.createLinearGradient(0,0,o.w,o.h); g2.addColorStop(0,o.c2); g2.addColorStop(1,o.c); PERF.gradCache.set(gk2,g2); } }
       ctx.fillStyle=isLow?o.c:g2; rrect(ctx,o.x,o.y,o.w,o.h,5); ctx.fill();
-      if(!isLow){
-        ctx.fillStyle='rgba(255,255,255,0.14)'; rrect(ctx,o.x+3,o.y+3,o.w-6,Math.min(o.h*.3,14),3); ctx.fill();
-        ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1.5;
-        for(var dl=1;dl<=2;dl++){ ctx.beginPath(); ctx.moveTo(o.x+o.w*.15*dl,o.y+o.h*.18); ctx.lineTo(o.x+o.w*.15*dl+o.w*.08,o.y+o.h*.8); ctx.stroke(); }
-      }
+      if(!isLow){ ctx.fillStyle='rgba(255,255,255,0.14)'; rrect(ctx,o.x+3,o.y+3,o.w-6,Math.min(o.h*.3,14),3); ctx.fill(); ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1.5; for(var dl=1;dl<=2;dl++){ ctx.beginPath(); ctx.moveTo(o.x+o.w*.15*dl,o.y+o.h*.18); ctx.lineTo(o.x+o.w*.15*dl+o.w*.08,o.y+o.h*.8); ctx.stroke(); } }
     }
     if(!isLow) PERF.clearShadow();
     ctx.restore();
   });
 }
 
-/* ══ PIÈCES ══ */
 var CTYPES=[{type:'coin',v:1,col:'#f5c518',col2:'#ffdd44'},{type:'gem',v:5,col:'#00d4ff',col2:'#88eeff'},{type:'star',v:3,col:'#ff6070',col2:'#ffaaaa'}];
 COINS=[]; var coinT=0,coinNext=50;
 function spawnCoins(){ var t=CTYPES[Math.floor(Math.random()*CTYPES.length)],n=1+Math.floor(Math.random()*5),baseY=GROUND-PH*(1.1+Math.random()*1.4); for(var i=0;i<n;i++) COINS.push({x:W+20+i*32,y:baseY,type:t.type,v:t.v,col:t.col,col2:t.col2,a:Math.random()*Math.PI*2,done:false}); coinNext=50+Math.random()*80; coinT=0; }
 function updateCoins(spd){ coinT++; if(coinT>=coinNext) spawnCoins(); for(var i=COINS.length-1;i>=0;i--){ var c=COINS[i]; c.x-=spd; c.a+=.06; if(c.done||c.x<-30) COINS.splice(i,1); } }
 function drawCoinShape(c){
-  var x=c.x, y=c.y+Math.sin(c.a)*5, r=PW*.38, isLow=PERF.isLow();
+  var x=c.x,y=c.y+Math.sin(c.a)*5,r=PW*.38,isLow=PERF.isLow();
   ctx.save();
   if(!isLow) PERF.setShadow(c.col,16);
   if(c.type==='coin'){
@@ -661,8 +677,7 @@ function drawCoinShape(c){
   } else if(c.type==='gem'){
     var g2=isLow?null:PERF.gradCache.get('ge_'+c.col);
     if(!g2&&!isLow){ g2=ctx.createLinearGradient(x,y-r,x,y+r); g2.addColorStop(0,c.col2); g2.addColorStop(.5,c.col); g2.addColorStop(1,'#005588'); PERF.gradCache.set('ge_'+c.col,g2); }
-    ctx.fillStyle=isLow?c.col:g2;
-    ctx.beginPath(); ctx.moveTo(x,y-r); ctx.lineTo(x+r*.7,y); ctx.lineTo(x,y+r); ctx.lineTo(x-r*.7,y); ctx.closePath(); ctx.fill();
+    ctx.fillStyle=isLow?c.col:g2; ctx.beginPath(); ctx.moveTo(x,y-r); ctx.lineTo(x+r*.7,y); ctx.lineTo(x,y+r); ctx.lineTo(x-r*.7,y); ctx.closePath(); ctx.fill();
     if(!isLow){ ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.beginPath(); ctx.moveTo(x,y-r); ctx.lineTo(x+r*.35,y-r*.1); ctx.lineTo(x,y-r*.1); ctx.closePath(); ctx.fill(); }
     if(!isLow) PERF.clearShadow();
   } else {
@@ -676,17 +691,11 @@ function drawCoinShape(c){
 }
 function drawCoins(){ COINS.forEach(drawCoinShape); }
 
-/* ══ PARTICULES ══ */
 PARTS=[];
-function burst(x,y,col,n){
-  var max=PERF.mp(n||8), batch=[];
-  for(var i=0;i<max;i++){ var a=Math.random()*Math.PI*2,sp=1.2+Math.random()*5.5; batch.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,life:1,col:col||'#e8192c',r:1.5+Math.random()*4}); }
-  for(var j=0;j<batch.length;j++) PARTS.push(batch[j]);
-}
+function burst(x,y,col,n){ var max=PERF.mp(n||8); for(var i=0;i<max;i++){ var a=Math.random()*Math.PI*2,sp=1.2+Math.random()*5.5; PARTS.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,life:1,col:col||'#e8192c',r:1.5+Math.random()*4}); } }
 function updateParts(){ for(var i=PARTS.length-1;i>=0;i--){ var p=PARTS[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=.1; p.vx*=.97; p.life-=.032; if(p.life<=0) PARTS.splice(i,1); } }
 function drawParts(){ PARTS.forEach(function(p){ ctx.save(); ctx.globalAlpha=Math.max(0,p.life); ctx.fillStyle=p.col; ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0,p.r*p.life),0,Math.PI*2); ctx.fill(); ctx.restore(); }); }
 
-/* ══ COLLISIONS ══ */
 function aabb(ax,ay,aw,ah,bx,by,bw,bh){ return ax<bx+bw&&ax+aw>bx&&ay<by+bh&&ay+ah>by; }
 function checkCols(){
   if(!PLR||PLR.inv>0||PLR.dead) return;
@@ -694,11 +703,7 @@ function checkCols(){
   for(var i=0;i<OBST.length;i++){ if(aabb(px,py,pw,ph,OBST[i].x+3,OBST[i].y+3,OBST[i].w-6,OBST[i].h-6)){ hitPlayer(); return; } }
   for(var j=0;j<COINS.length;j++){
     var c=COINS[j]; if(c.done) continue;
-    if(aabb(px,py,pw,ph,c.x-15,c.y-15,30,30)){
-      c.done=true; G.coins+=c.v; G.combo=Math.min(G.combo+1,8); var pts=c.v*10*G.combo; G.bonusScore+=pts;
-      snd(580,.05,'sine',.1); snd(780,.06,'sine',.07); burst(c.x,c.y,c.col,8); floatTxt('+'+pts+' ×'+G.combo,c.x,c.y,c.col); updateComboUI();
-      clearTimeout(G.comboReset); G.comboReset=setTimeout(function(){ G.combo=1; updateComboUI(); },2000);
-    }
+    if(aabb(px,py,pw,ph,c.x-15,c.y-15,30,30)){ c.done=true; G.coins+=c.v; G.combo=Math.min(G.combo+1,8); var pts=c.v*10*G.combo; G.bonusScore+=pts; snd(580,.05,'sine',.1); snd(780,.06,'sine',.07); burst(c.x,c.y,c.col,8); floatTxt('+'+pts+' ×'+G.combo,c.x,c.y,c.col); updateComboUI(); clearTimeout(G.comboReset); G.comboReset=setTimeout(function(){ G.combo=1; updateComboUI(); },2000); }
   }
 }
 function updateComboUI(){ var el=document.getElementById('hud-combo'); if(G.combo>1){ el.textContent='COMBO ×'+G.combo; el.style.opacity='1'; el.style.color=G.combo>=5?'#f5c518':'#00d4ff'; } else el.style.opacity='0'; }
@@ -709,27 +714,19 @@ function floatTxt(txt,x,y,col){ var wrap=document.getElementById('cv-wrap'),d=do
 var MILES=[300,800,1500,3000,6000,12000]; var mileIdx=0;
 function checkMile(){ if(mileIdx<MILES.length&&G.score>=MILES[mileIdx]){ [440,554,659,880].forEach(function(f,i){ setTimeout(function(){ snd(f,.1,'sine',.12); },i*65); }); floatTxt('LEVEL UP! 🔥',W/2,GROUND*.38,'#f5c518'); mileIdx++; } }
 
-/* ══ AUDIO ══ */
 var AC;
 function getAC(){ try{ if(!AC) AC=new(window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume(); return AC; }catch(e){ return null; } }
 function snd(freq,dur,type,vol){ var ac=getAC(); if(!ac) return; try{ var o=ac.createOscillator(),g=ac.createGain(); o.connect(g); g.connect(ac.destination); o.type=type||'sine'; o.frequency.value=freq; var t=ac.currentTime; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol||.1,t+.01); g.gain.linearRampToValueAtTime(0,t+dur+.03); o.start(t); o.stop(t+dur+.06); }catch(e){} }
 
-/* ══ GAME LOOP ══ */
 function loop(ts){
   RAF=requestAnimationFrame(loop);
   if(paused) return;
-
   var dt=Math.min((ts-lastT)/16.667,2.2); lastT=ts;
-
-  /* Logique — toujours 60fps */
   G.spd=Math.min(G.spd+.0009*dt,DIFF[diffIdx].spd+8); G.dist+=G.spd*dt*.05; G.score=Math.floor(G.dist*10)+G.bonusScore;
   checkMile(); updatePlayer(); updateObs(G.spd*dt); updateCoins(G.spd*dt); checkCols(); updateParts();
   document.getElementById('hud-score').textContent=G.score;
   document.getElementById('hud-coin-v').textContent=G.coins;
-
-  /* Rendu — skipé sur LOW si trop tôt */
   if(!PERF.shouldRender(ts)) return;
-
   var sx=0,sy=0; if(SK.d>0){ sx=(Math.random()-.5)*SK.a; sy=(Math.random()-.5)*SK.a; SK.d--; SK.a*=.84; }
   ctx.save(); if(sx||sy) ctx.translate(sx,sy);
   drawBG(G.spd*dt); drawCoins(); drawObs(); drawPlayer(); drawParts();
@@ -779,7 +776,8 @@ document.querySelectorAll('.play-btn,.go-retry,.go-home,.p-btn,.db,.perf-tog-btn
 });
 document.getElementById('s-best-v').textContent=getBest();
 
-(function(){ var k='_pr_cv',v='4'; if(sessionStorage.getItem(k)!==v){ sessionStorage.removeItem('_pr_tracked'); sessionStorage.setItem(k,v); } })();
+/* Anti-cache */
+(function(){ var k='_pr_cv',v='5'; if(sessionStorage.getItem(k)!==v){ sessionStorage.removeItem('_pr_tracked'); sessionStorage.setItem(k,v); } })();
 
 /* ══ DISCORD ══ */
 (function(){
@@ -790,13 +788,16 @@ document.getElementById('s-best-v').textContent=getBest();
   if(!p||!p.pseudo){ p={pseudo:genP(),visites:0,firstSeen:new Date().toLocaleString('fr-FR')}; }
   p.visites++; try{ localStorage.setItem('_pr_profil',JSON.stringify(p)); }catch(e){}
   var start=Date.now();
-  window.addEventListener('beforeunload',function(){ var d=Math.round((Date.now()-start)/1000); navigator.sendBeacon(WH,JSON.stringify({username:'👾 PIXEL RUN',embeds:[{title:'🔴 '+p.pseudo+' est parti',color:0x333333,fields:[{name:'👤',value:'**'+p.pseudo+'**',inline:true},{name:'⏱️',value:Math.floor(d/60)+'min '+(d%60)+'s',inline:true},{name:'⚡ Tier',value:'**'+PERF.getTier().toUpperCase()+'** ('+PERF.getFPS()+'fps)',inline:true}],timestamp:new Date().toISOString()}]})); });
+  window.addEventListener('beforeunload',function(){
+    var d=Math.round((Date.now()-start)/1000);
+    navigator.sendBeacon(WH,JSON.stringify({username:'👾 PIXEL RUN',embeds:[{title:'🔴 '+p.pseudo+' est parti',color:0x333333,fields:[{name:'👤',value:'**'+p.pseudo+'**',inline:true},{name:'⏱️',value:Math.floor(d/60)+'min '+(d%60)+'s',inline:true},{name:'⚡ HW/Actif',value:'**'+PERF.getHWTier().toUpperCase()+'**/'+PERF.getTier().toUpperCase()+' ('+PERF.getFPS()+'fps)',inline:true}],timestamp:new Date().toISOString()}]}));
+  });
   setTimeout(function(){
     if(sessionStorage.getItem('_pr_tracked')) return; sessionStorage.setItem('_pr_tracked','1');
     var device=/Mobile|Android|iPhone|iPad/.test(navigator.userAgent)?'📱 Mobile':'💻 Desktop';
     var os=navigator.userAgent.match(/(Windows|Mac|Linux|Android|iPhone|iPad)/)||['?'];
     var isR=p.visites>1;
-    fetch(WH,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:'👾 PIXEL RUN',embeds:[{title:isR?'🔄 Retour de '+p.pseudo+' (n°'+p.visites+')':'🟢 Nouveau — '+p.pseudo,color:isR?0xf5c518:0x2dc653,fields:[{name:'👤',value:'**'+p.pseudo+'**',inline:true},{name:'🔢 Visites',value:p.visites+'×',inline:true},{name:'⚡ Perf',value:'**'+PERF.getTier().toUpperCase()+'** • '+PERF.getFPS()+'fps',inline:true},{name:'📟',value:device,inline:true},{name:'💻 OS',value:os[0],inline:true},{name:'🌐',value:navigator.language||'?',inline:true},{name:'🖥️',value:window.screen.width+'x'+window.screen.height,inline:true},{name:'📅 1ère visite',value:p.firstSeen,inline:false},{name:'🕐 Maintenant',value:new Date().toLocaleString('fr-FR'),inline:false}],footer:{text:'PIXEL RUN — PERF v4'},timestamp:new Date().toISOString()}]})});
+    fetch(WH,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:'👾 PIXEL RUN',embeds:[{title:isR?'🔄 Retour de '+p.pseudo+' (n°'+p.visites+')':'🟢 Nouveau — '+p.pseudo,color:isR?0xf5c518:0x2dc653,fields:[{name:'👤',value:'**'+p.pseudo+'**',inline:true},{name:'🔢 Visites',value:p.visites+'×',inline:true},{name:'⚡ HW/Actif',value:'**'+PERF.getHWTier().toUpperCase()+'** / **'+PERF.getTier().toUpperCase()+'** • '+PERF.getFPS()+'fps',inline:true},{name:'📟',value:device,inline:true},{name:'💻 OS',value:os[0],inline:true},{name:'🌐',value:navigator.language||'?',inline:true},{name:'🖥️',value:window.screen.width+'x'+window.screen.height,inline:true},{name:'📅 1ère visite',value:p.firstSeen,inline:false},{name:'🕐 Maintenant',value:new Date().toLocaleString('fr-FR'),inline:false}],footer:{text:'PIXEL RUN — PERF v5'},timestamp:new Date().toISOString()}]})});
   },2500);
 })();
 </script>
