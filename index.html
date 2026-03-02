@@ -87,6 +87,9 @@ body.perf-low *{transition-duration:.08s!important;}
 body.perf-low .play-btn,body.perf-low .go-retry{box-shadow:0 5px 14px rgba(232,25,44,.25)!important;}
 body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
 
+.back-btn{width:100%;padding:15px;border:1px solid rgba(255,255,255,.1);border-radius:20px;background:rgba(255,255,255,.05);font-family:‘Bebas Neue’,sans-serif;font-size:.95rem;letter-spacing:.1em;color:#7070a0;cursor:pointer;margin-top:10px;}
+#game-menu-btn{position:absolute;top:12px;left:14px;z-index:20;display:flex;align-items:center;gap:6px;padding:8px 14px 8px 10px;border-radius:20px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);cursor:pointer;font-family:‘Bebas Neue’,sans-serif;font-size:.75rem;letter-spacing:.1em;color:#e0e0f0;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);}
+
 /* ── Toggle dans le menu ── */
 .perf-tog{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:18px;margin-bottom:16px;gap:10px;}
 .perf-tog-info{display:flex;flex-direction:column;gap:2px;flex:1;}
@@ -106,10 +109,6 @@ body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
 <!-- ══ START ══ -->
 
 <div id="start-scr" class="scr on">
-  <div style="position:absolute;top:46px;left:16px;display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:9px 16px 9px 12px;cursor:pointer;" onclick="window.location.href='https://cocopiete50-sys.github.io/Fl-chettes_game/'">
-    <span style="font-size:1rem;color:#f0f0f8;">←</span>
-    <span style="font-size:.58rem;font-weight:700;letter-spacing:.08em;color:#f0f0f8;font-family:'Rajdhani',sans-serif;">HUB</span>
-  </div>
   <span id="s-icon">👾</span>
   <span id="s-title">PIXEL RUN</span>
   <span id="s-sub">BY DART ZONE</span>
@@ -137,6 +136,7 @@ body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
       <div class="ctrl-r"><div class="ctrl-ic">🪙</div><div class="ctrl-tx">Collecte les pièces pour des <b>combo</b></div></div>
     </div>
     <button class="play-btn" id="play-btn">▶ JOUER</button>
+    <button class="back-btn" onclick="window.location.href='https://cocopiete50-sys.github.io/Fl-chettes_game/'">← CATALOGUE</button>
   </div>
 </div>
 
@@ -154,10 +154,7 @@ body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
   <div id="cv-wrap">
     <canvas id="cv"></canvas>
     <div id="pause-ic">⏸</div>
-    <div style="position:absolute;top:12px;left:14px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:7px 13px 7px 10px;cursor:pointer;z-index:10;" onclick="if(RAF)cancelAnimationFrame(RAF);RAF=null;window.location.href='https://cocopiete50-sys.github.io/Fl-chettes_game/'">
-      <span style="font-size:.9rem;color:#f0f0f8;">←</span>
-      <span style="font-size:.55rem;font-weight:700;letter-spacing:.08em;color:#f0f0f8;font-family:'Rajdhani',sans-serif;">HUB</span>
-    </div>
+    <div id="game-menu-btn" onclick="goMenu()"><span style="font-size:.9rem;">←</span><span>MENU</span></div>
   </div>
 </div>
 
@@ -167,7 +164,7 @@ body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
   <h2>PAUSE</h2><p>LE JEU EST EN PAUSE</p>
   <div class="p-card gl">
     <button class="p-btn p-resume" id="resume-btn">▶ REPRENDRE</button>
-    <button class="p-btn p-quit" id="quit-btn">✕ QUITTER</button>
+    <button class="p-btn p-quit" id="quit-btn">← MENU</button>
   </div>
 </div>
 
@@ -194,19 +191,19 @@ body.perf-high #s-icon,body.perf-high #cv{will-change:transform,opacity;}
 <script>
 'use strict';
 
-/* ══ PERF ENGINE v5 ══ */
+/* ══ PERF ENGINE v6 ══ */
 var PERF = (function(){
   var CFG = {
-    gpuIter:50, gpuFastMs:16, gpuSlowMs:48,
-    hwHighMin:62, hwMidMin:28,
-    fpsDnHigh:34, fpsDnMid:20,
-    fpsUpMid:56,  fpsUpHigh:68,
-    coolDown:4000, coolUp:30000,
-    confirmDn:3,   confirmUp:10,
-    fpsEMA:0.88,
-    renderMinMs:28,
-    partMul:{ high:1.0, mid:0.6, low:0.15 },
-    stars:{ high:80, mid:48, low:16 },
+    gpuIter:50, gpuFastMs:12, gpuSlowMs:40,
+    hwHighMin:65, hwMidMin:35,
+    fpsDnHigh:38, fpsDnMid:24,
+    fpsUpMid:58,  fpsUpHigh:68,
+    coolDown:2000, coolUp:30000,
+    confirmDn:2,   confirmUp:10,
+    fpsEMA:0.82,
+    renderMinMs:22,
+    partMul:{ high:1.0, mid:0.5, low:0.10 },
+    stars:{ high:80, mid:40, low:12 },
   };
   var S = {
     tier:'high', enabled:true, fpsSmooth:60,
@@ -399,6 +396,7 @@ PERF.init();
 /* ══ UI ══ */
 var SCRNS=['start-scr','game-scr','go-scr'];
 function show(id){ SCRNS.forEach(function(s){ document.getElementById(s).classList.toggle('on',s===id); }); }
+function goMenu(){ if(RAF){ cancelAnimationFrame(RAF); RAF=null; } document.getElementById('pause-scr').classList.remove('on'); paused=false; show('start-scr'); }
 var _t=document.getElementById('toast'),_tt;
 function toast(msg,col){ _t.textContent=msg; _t.style.background=col||'#222'; _t.classList.add('on'); clearTimeout(_tt); _tt=setTimeout(function(){ _t.classList.remove('on'); },2200); }
 function getBest(){ try{ return parseInt(localStorage.getItem('pr3_best'))||0; }catch(e){ return 0; } }
@@ -643,17 +641,17 @@ function togglePause(){ if(!document.getElementById('game-scr').classList.contai
 
 document.getElementById('play-btn').addEventListener('click',initGame);
 document.getElementById('retry-btn').addEventListener('click',initGame);
-document.getElementById('home-btn').addEventListener('click',function(){ if(RAF) cancelAnimationFrame(RAF); RAF=null; show('start-scr'); });
+document.getElementById('home-btn').addEventListener('click',goMenu);
 document.getElementById('pause-ic').addEventListener('click',togglePause);
 document.getElementById('resume-btn').addEventListener('click',togglePause);
-document.getElementById('quit-btn').addEventListener('click',function(){ paused=false; if(RAF) cancelAnimationFrame(RAF); RAF=null; document.getElementById('pause-scr').classList.remove('on'); show('start-scr'); });
+document.getElementById('quit-btn').addEventListener('click',function(){ paused=false; if(RAF) cancelAnimationFrame(RAF); RAF=null; document.getElementById('pause-scr').classList.remove('on'); goMenu(); });
 cv.addEventListener('touchstart',function(e){ e.preventDefault(); jump(); },{passive:false});
 cv.addEventListener('mousedown',function(){ jump(); });
 document.addEventListener('keydown',function(e){ if(e.code==='Space'||e.code==='ArrowUp'){ e.preventDefault(); jump(); } if(e.code==='Escape') togglePause(); });
 window.addEventListener('resize',function(){ if(document.getElementById('game-scr').classList.contains('on')) sizeCanvas(); });
 
 /* Ripple */
-document.querySelectorAll('.play-btn,.go-retry,.go-home,.p-btn,.db,.perf-tog-btn').forEach(function(el){
+document.querySelectorAll('.play-btn,.back-btn,.go-retry,.go-home,.p-btn,.db,.perf-tog-btn,#game-menu-btn').forEach(function(el){
   if(el.dataset.lq) return; el.dataset.lq='1';
   if(getComputedStyle(el).position==='static') el.style.position='relative';
   el.style.overflow='hidden';
